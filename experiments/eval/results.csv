@@ -281,3 +281,4 @@ when,submission,dataset,phase,status,skill,std_error,seconds,n_visible,n_hidden,
 2026-11-12 23:31:40,v14_zipcheck,sandbox_unicef,1,PASS,0.4038,0.0079,82.0,14885,1488,17856,v14_sandboxes_offline call1_of_3
 2026-11-12 23:33:03,v14_zipcheck,sandbox_world_bank,1,PASS,0.2858,0.0087,178.9,5195,520,39520,v14_sandboxes_offline call2_of_3
 2026-11-12 23:36:02,v14_zipcheck,sandbox_unhcr,1,PASS,0.2361,0.0123,576.6,8279,621,132273,v14_sandboxes_offline call3_of_3
+2026-11-13 00:17:02,submission,wb_realistic,2,PASS,0.1772,0.0062,449.6,5715,1212,92112,repo_reproduce
