@@ -2,8 +2,12 @@
 *.ckpt
 *.zip
 # survey data is never committed: builders recreate it locally
-experiments/datasets/*/
-!experiments/datasets/builders/
+experiments/datasets/*/*
+!experiments/datasets/*/README.md
+!experiments/datasets/builders/*
+experiments/datasets/raw/
+experiments/proxy_survey/data/
+experiments/proxy_survey/proxy*/
 experiments/eval/gap_cache/
 _sandbox/
 __pycache__/
@@ -13,3 +17,4 @@ paper/*.log
 paper/*.out
 paper/*.bbl
 paper/*.blg
+experiments/eval/.lock
