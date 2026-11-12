@@ -1,0 +1,15 @@
+# weights are downloaded, never committed (scripts/fetch_tabicl.py)
+*.ckpt
+*.zip
+# survey data is never committed: builders recreate it locally
+experiments/datasets/*/
+!experiments/datasets/builders/
+experiments/eval/gap_cache/
+_sandbox/
+__pycache__/
+.venv/
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
