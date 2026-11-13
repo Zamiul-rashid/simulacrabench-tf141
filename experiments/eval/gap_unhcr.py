@@ -143,12 +143,33 @@ print("%-38s %6.1f%% %9.4f %9.4f %9.4f %11.4f %11.4f" % (
     "all", 100.0, pts(ours - ref, ref == ref), pts(lp_g - ref, ref == ref), pts(lp_t - ref, ref == ref),
     pts(lp_g - ours, ref == ref), pts(lp_t - ours, ref == ref)))
 print("(columns ours / GIVEN / link: skill points earned over the crowd marginal; gaps: points we are short)")
+# Uncertainty: resample hidden respondents (rows) with replacement; each group's gap is a sum of
+# per-row contributions, so a row bootstrap gives its standard error. The oracle itself is a
+# Monte Carlo estimate (a.draws simulations per row, +0.1 smoothing), so it is slightly pessimistic.
+rng = np.random.default_rng(0)
+n_rows = ref.shape[0]
+def row_pts(x, m):
+    return np.where(m, x, 0.0).sum(1) / (N * R)
+named = groups + [("all", ref == ref)]
+contrib = {lab: (row_pts(lp_g - ours, m), row_pts(lp_t - ours, m)) for lab, m in named}
+B = 1000
+idx = rng.integers(0, n_rows, size=(B, n_rows))
+print("\nbootstrap over %d hidden rows (B=%d): gap -> GIVEN-only and gap -> link, with standard errors" % (n_rows, B))
+for lab, _ in named:
+    g, t = contrib[lab]
+    print("%-38s %9.4f (se %.4f) %9.4f (se %.4f)" % (lab, g.sum(), g[idx].sum(1).std(ddof=1), t.sum(), t[idx].sum(1).std(ddof=1)))
+lk = (O["link"] >= 0)
+for lab, m in (("rows with a visible same-household row", lk), ("rows without", ~lk)):
+    g = row_pts(lp_g - ours, np.ones_like(ref, bool))[m]
+    print("%-38s gap -> GIVEN-only %.4f (se %.4f)" % (lab, g.sum(), np.array([g[rng.integers(0, len(g), len(g))].sum() for _ in range(B)]).std(ddof=1)))
 per = pd.DataFrame({"item": O["targets"], "K": O["K"], "gated": O["gated"],
                     "gap_given": (lp_g - ours).sum(0) / (N * R), "gap_link": (lp_t - ours).sum(0) / (N * R),
                     "ours": (ours - ref).sum(0) / (N * R), "best_given": (lp_g - ref).sum(0) / (N * R)})
 per = per.sort_values("gap_given", ascending=False)
 out = os.path.join(ROOT, "experiments", "eval", "gap_%s_%s_p%d.csv" % (name, a.dataset, a.phase))
 per.to_csv(out, index=False)
+print("\nper-question gap to the GIVEN-only best: median %.5f, max %.5f, share of questions above 0: %.2f"
+      % (per.gap_given.median(), per.gap_given.max(), (per.gap_given > 0).mean()))
 print("\nquestions where we are furthest below the GIVEN-only best (skill points):")
 print(per.head(15).to_string(index=False, float_format=lambda v: "%.4f" % v))
 print("\ngap to GIVEN-only best by number of options:")
