@@ -1,0 +1,30 @@
+[v13_sandboxes] [v13] TabICL second pass: 12 questions covered; questions done per full pass {1: 12, 2: 5}
+[v13_sandboxes] [v13] similarity layer: no question improved (2s, at 82s of 80s)
+[v13_sandboxes] [v13] dropped: nothing
+[v13_sandboxes] SKILL 0.4038 (+/- 0.0079) 82s  v13_top on sandbox_unicef (call 1, 83s since import)
+[v13_sandboxes] [v13] TabICL second pass: 76 questions covered; questions done per full pass {1: 76, 2: 11}
+[v13_sandboxes] [v13] similarity layer: not applied: honest gain -0.0408 per row summed over questions, below 2.0 x its standard error 0.0097 (1s, at 165s of 168s)
+[v13_sandboxes] [v13] dropped: nothing
+[v13_sandboxes] SKILL 0.2858 (+/- 0.0087) 165s  v13_top on sandbox_world_bank (call 2, 248s since import)
+[v13_sandboxes] [v13] TabICL second pass: 213 questions covered; questions done per full pass {1: 132}
+[v13_sandboxes] [v13] similarity layer: not applied: honest gain -0.0879 per row summed over questions, below 2.0 x its standard error 0.0390 (2s, at 539s of 547s)
+[v13_sandboxes] [v13] dropped: nothing
+[v13_sandboxes] SKILL 0.2361 (+/- 0.0123) 539s  v13_top on sandbox_unhcr (call 3, 788s since import)
+[v13_sandboxes] TOTAL 788s from import to last return; mean skill 0.3086
+[v13_final_rehearsal] [v13] TabICL second pass: 12 questions covered; questions done per full pass {1: 12, 2: 8}
+[v13_final_rehearsal] [v13] similarity layer: no question improved (2s, at 112s of 112s)
+[v13_final_rehearsal] [v13] dropped: nothing
+[v13_final_rehearsal] SKILL 0.3440 (+/- 0.0045) 112s  v13_top on unicef_realistic (call 1, 112s since import)
+[v13_final_rehearsal] [v13] TabICL second pass: 76 questions covered; questions done per full pass {1: 76, 2: 76, 3: 76, 4: 76}
+[v13_final_rehearsal] [v13] similarity layer: not applied: honest gain -0.0302 per row summed over questions, below 2.0 x its standard error 0.0129 (1s, at 437s of 712s)
+[v13_final_rehearsal] [v13] dropped: nothing
+[v13_final_rehearsal] SKILL 0.1772 (+/- 0.0062) 437s  v13_top on wb_realistic (call 2, 550s since import)
+[v13_final_rehearsal] [v13] TabICL second pass: 213 questions covered; questions done per full pass {1: 213, 2: 213, 3: 213, 4: 207}
+[v13_final_rehearsal] [v13] similarity layer: sharpness 1.0; 140 of 213 questions adjusted; held-back loss down 0.0021 per question on average; honest gain 0.2949 per row (standard error 0.0647) (2s, at 2226s of 2345s)
+[v13_final_rehearsal] [v13] dropped: nothing
+[v13_final_rehearsal] SKILL 0.7064 (+/- 0.0046) 2227s  v13_top on unhcr_full (call 3, 2778s since import)
+[v13_final_rehearsal] TOTAL 2778s from import to last return; mean skill 0.4092
+[afrobarometer final size, memory] exit done; peak 3.53 GB
+[afrobarometer final size, memory] 1794463015 [v13] dropped: nothing
+[afrobarometer final size, memory] 1794463021 SKILL 0.1835 (+/- 0.0021) 1830s  v13_top on real_afrobarometer_r8
+V13F_DONE

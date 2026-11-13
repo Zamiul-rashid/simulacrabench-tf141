@@ -1,0 +1,13 @@
+OK: submissions/v14_time.zip looks like a valid submission ZIP.
+[v14] TabICL second pass: 12 questions covered; questions done per full pass {1: 12, 2: 4}
+[v14] dropped: nothing
+SKILL 0.4038 (+/- 0.0079) 82s  v14_zipcheck on sandbox_unicef (call 1, 82s since import)
+[v14] TabICL second pass: 76 questions covered; questions done per full pass {1: 76, 2: 12}
+[v14] dropped: nothing
+SKILL 0.2858 (+/- 0.0087) 179s  v14_zipcheck on sandbox_world_bank (call 2, 261s since import)
+[v14] TabICL second pass: 213 questions covered; questions done per full pass {1: 134}
+[v14] dropped: nothing
+SKILL 0.2361 (+/- 0.0123) 577s  v14_zipcheck on sandbox_unhcr (call 3, 839s since import)
+TOTAL 839s from import to last return; mean skill 0.3086
+
+[exited with code 0]

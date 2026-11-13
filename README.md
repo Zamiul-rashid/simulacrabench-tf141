@@ -29,7 +29,7 @@ by the three surveys, and time a survey does not use flows to the next.
 
 | Path | What |
 |---|---|
-| `submission/` | The submitted `main.py` (byte-identical to the uploaded archive) and `requirements.txt`. |
+| `submission/` | The submitted `main.py` (byte-identical to the uploaded archive) and `requirements.txt`. The test-phase code is tagged `test-submission`. |
 | `scripts/fetch_tabicl.py` | Downloads the TabICL v2 checkpoint from a pinned Hugging Face revision and checks its SHA-256. |
 | `scripts/build_zip.sh` | Rebuilds the exact archive that was uploaded. |
 | `experiments/eval/` | Local scoring tools (organisers' scorer), the rehearsal of the hosted run, the gap analysis, and `results.csv`, the log of every local run. See [`experiments/README.md`](experiments/README.md). |
@@ -57,12 +57,27 @@ python starter-kit/score.py --submission submission --data _sandbox/world_bank \
        --schema starter-kit/data/world_bank.json --config starter-kit/config.yml --phase 2
 ```
 
+Archive members (SHA-256):
+
+| File | SHA-256 |
+|---|---|
+| `main.py` | `08bdcec239338a48798874ebbb2835f123847cc5e2d866e8509ee452a863c1e4` |
+| `requirements.txt` | `6be5bd0b0d833a894143836fbef9584490475aba7da2ba1851c07eed2bf6530d` |
+| `tabicl-classifier-v2-20260212.ckpt` | `bdc7dbd5e4ff21f8f0456fcf90c6b7cdf72dbea960f2d05b19bec19f9b3d4ed0` |
+
+The zip's own hash depends on file timestamps, so compare members, not the archive.
+
 The real survey microdata are held by the organisers and never leave their servers; test-phase
 predictions are produced by their runner calling `submission/main.py`.
 
-The number of TabICL rounds completed depends on the machine's speed, so results can vary
-slightly between machines. Set `SB_FULL_PASSES` (rounds) and `SB_CLOCK_SECONDS` (time
-budget) to pin them.
+Results depend on wall-clock time: every model member stops at a deadline, so how many TabICL
+rounds finish depends on the machine's speed and on the order of the surveys. `SB_FULL_PASSES`
+and `SB_CLOCK_SECONDS` bound the computation but do not fix it; leave every `SB_*` variable
+unset to reproduce the submitted run (the phase is detected from the number of hidden rows).
+Locally, three survey orders of the same version varied by about 0.002 skill.
+
+If outputs are ever released as imputed or synthetic microdata, switch the similarity layer
+off (`SB_TOP=0`): it moves predictions toward near-identical visible respondents.
 
 ## Data use
 

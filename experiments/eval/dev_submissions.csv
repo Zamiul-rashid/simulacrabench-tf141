@@ -1,0 +1,11 @@
+version,date,codabench_submission_id,mean,unicef,world_bank,unhcr,note
+organisers_gate_baseline,2026-11-11,,0.06,,,-0.37,organisers' baseline with schema gates; UNHCR per-survey value as noted at the time
+v1_learned_gates,2026-11-11,,0.43,,,,per-survey values not recorded
+v2_joint,2026-11-11,,0.46,,,,per-survey values not recorded
+v3_prior,2026-11-11,,0.48,,,,per-survey values not recorded
+v5_tabicl,2026-11-11,,0.4828,0.3499,0.2335,0.8650,
+v7_all,2026-11-11,,0.4828,0.3499,0.2335,0.8650,
+v10_pool,2026-11-12,1048594,0.48,0.35,0.23,0.87,as displayed (2 decimals)
+v13_top,2026-11-12,,0.4893,0.3499,0.2335,0.8843,best development score; the submitted test-phase code
+v14_time,2026-11-13,,0.48,,,,v13 with an 850 s / 3150 s clock and up to 8 TabICL rounds; not chosen
+v13_top,2026-11-14,,,,,,re-upload of the same archive; result not recorded here

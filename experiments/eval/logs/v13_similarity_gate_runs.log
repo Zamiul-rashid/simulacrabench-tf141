@@ -1,0 +1,22 @@
+[proxy_repeat] [v13] similarity layer: not applied: honest gain -0.0070 per row summed over questions, below 2.0 x its standard error 0.0161 (1s, at 140s of 141s)
+[proxy_repeat] [v13] dropped: nothing
+[proxy_repeat] SKILL 0.1558 (+/- 0.0052) 140s  v13_top on proxy_repeat
+[proxy] [v13] similarity layer: not applied: honest gain -0.0193 per row summed over questions, below 2.0 x its standard error 0.0059 (1s, at 139s of 141s)
+[proxy] [v13] dropped: nothing
+[proxy] SKILL 0.1123 (+/- 0.0047) 140s  v13_top on proxy
+[wb_realistic] [v13] similarity layer: not applied: honest gain -0.0342 per row summed over questions, below 2.0 x its standard error 0.0182 (1s, at 179s of 182s)
+[wb_realistic] [v13] dropped: nothing
+[wb_realistic] SKILL 0.1658 (+/- 0.0095) 179s  v13_top on wb_realistic
+[unhcr_full gap] [v13] similarity layer: sharpness 1.0; 143 of 213 questions adjusted; held-back loss down 0.0019 per question on average; honest gain 0.2435 per row (standard error 0.0589) (2s, at 899s of 934s)
+[unhcr_full gap] [v13] dropped: nothing
+[unhcr_full gap] skill: ours 0.7081 | best possible from GIVEN 0.7401 | best possible with household link 0.7700
+[real_cps_panel] [v13] similarity layer: sharpness 1.0; 37 of 80 questions adjusted; held-back loss down 0.0014 per question on average; honest gain 0.0649 per row (standard error 0.0294) (1s, at 714s of 749s)
+[real_cps_panel] [v13] dropped: nothing
+[real_cps_panel] SKILL 0.4068 (+/- 0.0128) 714s  v13_top on real_cps_panel
+[unhcr_repeats] [v13] similarity layer: sharpness 2.0; 123 of 213 questions adjusted; held-back loss down 0.0017 per question on average; honest gain 0.1948 per row (standard error 0.0749) (2s, at 498s of 509s)
+[unhcr_repeats] [v13] dropped: nothing
+[unhcr_repeats] SKILL 0.7659 (+/- 0.0076) 498s  v13_top on unhcr_repeats
+[real_wb_fcc2021_s1] [v13] similarity layer: not applied: honest gain 0.0008 per row summed over questions, below 2.0 x its standard error 0.0094 (1s, at 164s of 167s)
+[real_wb_fcc2021_s1] [v13] dropped: nothing
+[real_wb_fcc2021_s1] SKILL 0.2089 (+/- 0.0092) 164s  v13_top on real_wb_fcc2021_s1
+V13E_DONE

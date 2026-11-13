@@ -24,7 +24,16 @@ python experiments/eval/gap_unhcr.py submission --phase 1
 | `eval/run_matrix.py` | Runs `run.py` over a list of datasets, one at a time under a memory cap (Linux: `flock` + `systemd-run`). |
 | `eval/by_item.py` | Per-question skill of a submission, next to the best possible where it is known. |
 | `eval/gap_unhcr.py` | Regenerates a fabricated UNHCR-like dataset from its builder, computes the true P(answer given GIVEN) per cell, and splits the submission's shortfall by row and question type. |
+| `eval/paired.py` | Compares two `run.py --dump` files cell by cell: skill difference with a respondent-clustered standard error, and skill by level of a GIVEN column. |
+| `eval/logs/` | Run logs behind numbers in the paper (gate decisions, timing and memory, CatBoost test, gap analyses, review runs). Paths are replaced by `<workspace>` / `<repo>`. |
+| `eval/dev_submissions.csv` | Development-leaderboard uploads and their (noised, rounded) scores. |
 | `eval/results.csv` | Every local run we made (submission version, dataset, phase, skill, standard error, seconds). The tables in the paper come from this file. |
 
 Submission versions in `results.csv` are named `vN_*`; the final one is `v13_top`, whose
-code is `submission/main.py`. Rows tagged `callK_of_N` come from `run_three.py`.
+code is `submission/main.py`. Some versions changed while under development under the same
+name (for example the v13 gate variants tagged `v13b`, `v13c_*`, `v13d_z2.5`; the submitted rule
+is `v13e_honest`). `x_*` are scratch experiments (`x_time`: more TabICL members; `x_cat`: a
+CatBoost member). `v14_time`/`v14_zipcheck` is v13 with a longer clock and up to eight TabICL
+rounds, tested and uploaded but not chosen. Rows tagged `callK_of_N` come from `run_three.py`;
+`heldout_*` and `gate_on`/`gate_off` rows come from the checks requested in the paper review
+(`--dump` cells in `eval/cells/`, not committed).
