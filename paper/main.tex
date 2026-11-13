@@ -1,5 +1,6 @@
 %% SimulacraBench Technical Report -- team TF141
 %% Built from the official template (docs: simulacrabench_report_template.tex); section order unchanged.
+%% Every number in this file is mapped to its source in paper/numbers.md.
 \documentclass{article}
 %% The template's [final] option leaves the footer's track name undefined; name it here.
 \makeatletter\newcommand{\@trackname}{NeurIPS 2026 Competition Track: SimulacraBench.}\makeatother
@@ -24,10 +25,10 @@
 \newcommand{\teamid}{TF141}
 \newcommand{\cbox}{$\square$}
 \newcommand{\cboxchecked}{$\boxtimes$}
-%% Placeholders that can only be filled after the test phase is scored or the repo is public.
+%% Placeholders that can only be filled by the authors or after the test phase is scored.
 \newcommand{\tbd}[1]{\textcolor{red}{#1}}
 
-\title{SimulacraBench Technical Report:\\ A Self-Validating, Time-Budgeted Blend of Tabular Learners}
+\title{SimulacraBench Technical Report:\\ A Time-Budgeted Blend of Tabular Learners for Per-Cell Survey Completion}
 
 \author{%
   \tbd{Author name(s)}\\
@@ -48,7 +49,7 @@
 \end{center}
 
 \begin{abstract}
-Every hidden cell is scored on its own, so the target is $P(\text{answer}\mid\text{GIVEN columns})$ for each question, estimated from the visible respondents inside the hosted run. Our submission fits five model families at run time (a shared multi-head network, a wider second network, a similarity model with learned column weights, per-question logistic regression, and the pretrained in-context learner TabICL v2) and blends them per question. Blend weights come from expectation--maximisation on held-back rows, averaged with a geometric pool. A final similarity layer is switched on per survey only when a split-half check on held-back rows shows a gain of more than two standard errors. ``Not asked'' is an ordinary answer option, and a closing step corrects for the grader's probability floor. Everything runs under one clock shared by the three surveys. Local test data were used only to choose the design. On the development leaderboard the submission scores 0.4893 (UNICEF 0.3499, World Bank 0.2335, UNHCR 0.8843). Test-phase score: \tbd{0.0000}.
+Each hidden cell is scored on its own, so we estimate, for every question, the distribution of the answer given a respondent's GIVEN columns and the visible respondents, inside the hosted run. Five model families are fitted at run time (a shared multi-head network, a wider network, a similarity model with learned column weights, per-question logistic regression, and the pretrained in-context learner TabICL v2) and blended per question: a linear pool with weights fitted by expectation-maximisation on a held-back fold, averaged with a logarithmic pool. A last similarity layer, which helps where visible rows contain near-duplicates of hidden ones, is kept for a survey only if a split-half check on the held-back fold supports it. ``Not asked'' is an ordinary answer option, a closing step adapts the vectors to the grader's probability floor, and one clock is shared by the three surveys. The design was chosen on locally built proxy datasets (no SimulacraBench data); the local numbers we report come from those same data unless marked held-out. Best development-leaderboard score: 0.4893 (UNICEF 0.3499, World Bank 0.2335, UNHCR 0.8843). Test-phase score: \tbd{0.0000}.
 \end{abstract}
 
 %% ---------------------------------------------------------------------------
@@ -63,18 +64,19 @@ Every hidden cell is scored on its own, so the target is $P(\text{answer}\mid\te
 \begin{tabular}{@{}clcl@{}}
     \toprule
     \cbox & LLM-simulated respondents (prompting, personas) & \cbox & Fine-tuned language model \\
-    \cbox & Tabular / conditional generative model & \cboxchecked & Supervised prediction (neural net, linear/GLM) \\
-    \cbox & Bayesian / hierarchical / multilevel model & \cbox & Small-area estimation or post-stratification \\
-    \cbox & Reweighting, raking, or calibration of the sample & \cboxchecked & Imputation / matching / nearest-neighbour \\
+    \cbox & Tabular / conditional generative model (e.g.\ VAE, diffusion, GAN, CTGAN) & \cboxchecked & Supervised prediction (GBDT, neural net, linear/GLM) \\
+    \cbox & Bayesian / hierarchical / multilevel model & \cbox & Small-area estimation or post-stratification (e.g.\ MRP) \\
+    \cbox & Reweighting, raking, or calibration of the released sample & \cboxchecked & Imputation / matching / nearest-neighbour \\
     \cbox & Retrieval over released or external microdata & \cbox & Agent-based or mechanistic simulation \\
     \cboxchecked & Ensemble or stacking of multiple components & \cboxchecked & Other: pretrained tabular in-context learner \\
     \bottomrule
   \end{tabular}}
 \end{table}
+\vspace{-2mm}It is supervised per-cell prediction, not LLM simulation of respondents \citep{argyle2023outofone} nor multiple imputation of whole records \citep{vanbuuren2011mice}.
 
 \subsection{Pipeline}
 \label{sec:pipeline}
-The grader \citep{simulacrabench} scores each hidden cell by the log probability of the true answer after mixing our vector with a floor $\varepsilon=10^{-3}$, $\tilde p_k=\varepsilon+(1-K\varepsilon)p_k$. Skill is $1+\overline{\log\tilde p}/R$, with $R$ the crowd marginal's surprisal. The rule is proper \citep{gneiting2007scoring} and a hidden respondent shows only GIVEN columns, so the best prediction for a cell is the conditional distribution of its question given those columns; joint structure across questions does not matter. Our method is therefore a per-question estimator fitted inside \texttt{predict()} on the visible rows (Figure~\ref{fig:pipeline}). Visible rows go into five folds. Fold 0 (20\%), the \emph{blend fold}, is predicted by models that never saw it, and every later choice is made on it. Members then refit on all visible rows to predict the hidden ones.
+The grader \citep{simulacrabench} scores each hidden cell by the log probability of the true answer after mixing our vector with a floor $\varepsilon=10^{-3}$, $\tilde p_k=\varepsilon+(1-K\varepsilon)p_k$; skill is $1+\overline{\log\tilde p}/R$, with $R$ the crowd marginal's surprisal. The unfloored log score is strictly proper \citep{gneiting2007scoring}; the floor makes reporting beliefs slightly suboptimal, which \S\ref{sec:post} undoes. Cells are scored separately, so dependence between answers does not affect the expected score. If hidden respondents are exchangeable with, and unrelated to, the visible ones, the best prediction for a cell is $P(\text{answer}\mid\text{GIVEN})$. Where the same unit can appear on both sides (households interviewed twice), the target is $P(\text{answer}\mid\text{GIVEN},\text{visible rows})$, and closeness to particular visible rows carries extra information (App.~\ref{app:local}). We fit a per-question estimator inside \texttt{predict()} (Figure~\ref{fig:pipeline}). Fold 0 of five (20\% of visible rows) is the \emph{blend fold}. The networks and TabICL predict it from models fitted without it; the similarity model predicts it leave-one-out but tunes its settings on all visible rows; logistic regression chooses its penalty on it. All later stages are fitted on this same fold in sequence, without further nesting.
 
 \begin{figure}[h]
 \centering
@@ -82,72 +84,76 @@ The grader \citep{simulacrabench} scores each hidden cell by the log probability
   \node[box] (in) {visible rows\\+ hidden GIVEN};
   \node[box, right=of in] (m) {marginal, net, wide net,\\similarity, LR, TabICL};
   \node[box, right=of m] (b) {EM linear pool\\$\oplus$ log pool};
-  \node[box, right=of b] (s) {similarity layer\\(if honest gain)};
+  \node[box, right=of b] (s) {similarity layer\\(if split-half gain)};
   \node[box, right=of s] (f) {skip rules,\\floor correction};
   \draw[->] (in) -- (m); \draw[->] (m) -- (b); \draw[->] (b) -- (s); \draw[->] (s) -- (f);
 \end{tikzpicture}
-\caption{Run-time pipeline, once per survey: members (\S\ref{sec:model}), a per-question blend of a linear and a geometric pool (\S1.6), a similarity layer kept only if an honest test supports it, exact skip rules and a floor correction (\S\ref{sec:post}).}
+\caption{Run-time pipeline, once per survey: members (\S\ref{sec:model}), a per-question blend of a linear and a logarithmic pool (\S\ref{sec:agg}), a similarity layer kept only if a split-half check supports it, exact skip rules and a floor correction (\S\ref{sec:post}).}
 \label{fig:pipeline}
 \end{figure}
 
 \subsection{Inputs and feature construction}
-Only the GIVEN columns and the visible PREDICT answers are used. \texttt{respondent\_id} is ignored (rows are shuffled before it is assigned), and so is question text. GIVEN columns are one-hot encoded (schema levels plus missing). TabICL instead gets two codes per column: frequency rank among context rows and schema order. For gated items the sentinel \texttt{NA\_GATED} is \emph{learned as an ordinary option}: the schemas' gate rules hold only partly (UNHCR documents 29--98\% agreement).
+Only the GIVEN columns and the visible PREDICT answers are used; \texttt{respondent\_id} (assigned after the organisers shuffle rows) and question text are not. GIVEN columns are one-hot encoded (schema levels plus missing); TabICL gets two codes per column, frequency rank among context rows and schema order. For gated items the sentinel \texttt{NA\_GATED} is \emph{learned as an ordinary option}, since the schemas' gate rules hold only partly (UNHCR documents 29--98\% agreement); ``don't know'' and refusals are ordinary options too, distinct from \texttt{NA\_GATED}.
 
 \subsection{Model or simulator}
 \label{sec:model}
-\textbf{Crowd marginal}, the fallback for every question. \textbf{Shared network}: one hidden layer (128 units) with a softmax head per question; five copies, each trained on three folds, early-stopped on a fourth and predicting the fifth, give honest out-of-fold predictions. \textbf{Wide network}: the same with two layers of 384. \textbf{Similarity model}: weight $w(x,x')=\exp(-\beta\sum_j\theta_j[x_j\neq x'_j])$, column weights $\theta$ learned by leave-one-out log loss; the votes $\sum w\,y'$ are combined with the network's prediction as a prior of pseudo-count $\alpha$, with $(\beta,\alpha)$ chosen per question. \textbf{Logistic regression} per question \citep{pedregosa2011sklearn}. \textbf{TabICL v2} \citep{qu2025tabicl,tabiclv2ckpt}, inference only: a fast pass covers every question, then rounds of two more estimators (new seed) are averaged in, up to four. Settings are in Table~\ref{tab:hyper}. Questions are treated as conditionally independent given the GIVEN columns, as the scoring rule implies.
+\textbf{Crowd marginal}, the fallback for every question. \textbf{Shared network}: one hidden layer (128 units), a softmax head per question; five copies, each trained on three folds, early-stopped on a fourth and predicting the fifth, give out-of-fold predictions, and hidden rows get the mean of the five. \textbf{Wide network}: the same with two layers of 384. \textbf{Similarity model}: weight $w(x,x')=\exp(-\beta\sum_j\theta_j[x_j\neq x'_j])$ with column weights $\theta$ learned by leave-one-out log loss (as in NCA \citep{goldberger2004nca}; cf.\ \citep{gorishniy2024tabr,ye2025modernnca}); votes $\sum w\,y'$ are combined with the network's prediction as a prior of pseudo-count $\alpha$, a model-assisted hot deck \citep{andridge2010hotdeck}. \textbf{Logistic regression} per question \citep{pedregosa2011sklearn}. \textbf{TabICL v2} \citep{qu2025tabicl,qu2026tabiclv2,tabiclv2ckpt}, inference only; we preferred it to TabPFN v2 \citep{hollmann2025tabpfn}, which handles at most 10 classes natively, against our 25-option questions. A fast pass (one estimator) covers every question; the first full round (two estimators, both encodings) replaces it, and later rounds add two estimators each (new seed), averaged, up to four rounds while time remains. Questions are modelled separately. Settings: Table~\ref{tab:hyper}.
 
 \subsection{Fitting, training, or prompting}
-All fitting happens in the hosted run on the phase's visible rows (TRAIN, then TRAIN+DEV in the test phase); we pre-train nothing. Networks use AdamW \citep{loshchilov2019adamw}, the similarity weights Adam \citep{kingma2015adam}; all selection uses held-back rows. \textbf{Clock}: \texttt{main.py} is imported once and \texttt{predict()} is called per survey under one limit, so our clock starts at import (800\,s of 900 in development, 2900\,s of 3600 in the test phase). Each survey gets a share of the time actually left, proportional to its question count, with 80\,s kept for later surveys; members stop at fixed fractions of the share, so a faster machine completes more TabICL rounds.
+Everything is fitted in the hosted run on the phase's visible rows (TRAIN; TRAIN+DEV in the test phase); we pre-train nothing. Networks use AdamW \citep{loshchilov2019adamw}, the similarity weights Adam \citep{kingma2015adam}. One clock, started at import, covers the three \texttt{predict()} calls; each survey gets a share of the time left and members stop at fixed fractions of it (Table~\ref{tab:hyper}), so a faster machine completes more TabICL rounds.
 
 \subsection{Prediction and aggregation}
-For question $t$ with members $m$ giving $p_m(y\mid x)$, the linear pool's weights $w_t$ maximise the blend-fold likelihood by EM \citep{dempster1977em}. They start from survey-wide weights fitted the same way over all questions, and are shrunk toward them with 40 pseudo-rows. The geometric pool $\propto\prod_m p_m^{v_{t,m}}$, $v\in[0,3]$, is fitted by L-BFGS-B with a quadratic penalty toward survey-wide exponents; its weights need not sum to one, so it can sharpen or flatten. The output is the average of the two pools. This is stacking \citep{wolpert1992stacked} with a likelihood objective.
+\label{sec:agg}
+For question $t$ with members $m$ giving $p_m(y\mid x)$, the linear pool's weights maximise the blend-fold likelihood by EM \citep{dempster1977em}, as in EM-fitted ensemble mixtures \citep{raftery2005bma}, shrunk toward survey-wide weights with 40 pseudo-rows. The logarithmic pool $\propto\prod_m p_m^{v_{t,m}}$ \citep{genest1986combining,heskes1998logpool}, over the non-marginal members with $v\in[0,3]$, is fitted by L-BFGS-B \citep{byrd1995lbfgsb} with a quadratic penalty toward survey-wide exponents; its weights need not sum to one, so it can sharpen \citep{ranjan2010combining}. The output averages the two pools (an empirical choice). Both are likelihood-based combinations of predictive distributions \citep{wolpert1992stacked,hall2007combining,geweke2011optimal,yao2018stacking}.
 
-\subsection{Post-processing and calibration}
+\subsection{Post-processing and calibration (if applicable)}
 \label{sec:post}
-\textbf{Similarity layer.} The similarity model is applied once more with the blended prediction as its prior: rows with a close visible match move toward that match's answers, and other rows keep the blend. Sharpness $\beta$ is one setting per survey and the prior weight $\alpha$ is chosen per question, both on the blend fold with each row's own answers left out. Selecting on the same rows flatters the gain, so the layer is applied only if a split-half check passes: choose on one half, score on the other, swap, and require the per-row gain summed over questions to exceed $2$ standard errors. Without this check the layer lost up to 0.0012 skill on surveys lacking near-duplicates (Table~\ref{tab:gate}). \textbf{Floor correction}: for beliefs $q$, $\sum_k q_k\log(\varepsilon+(1-K\varepsilon)p_k)$ is maximised by water-filling, $\tilde p_k=\max(cq_k,\varepsilon)$; its strength is chosen per option-count group on the blend fold. \textbf{Exact skip rules} where a GIVEN-parent gate has no exception in the visible rows (rule-of-succession probabilities).
+\textbf{Similarity layer.} The similarity model is applied again with the blended prediction as its prior: rows with a close visible match move toward that match's answers, other rows keep the blend. Sharpness $\beta$ is chosen on the whole blend fold. Then, on one random half of the fold, the prior weight $\alpha$ and the set of adjusted questions are chosen and their gain is measured on the other half, and vice versa; the layer is kept if the mean per-row gain (summed over questions) exceeds 2 standard errors. This is a guard, not a fully nested test: $\beta$ is shared by both halves, the standard error treats rows as independent (optimistic when near-duplicates fall in the fold), and the threshold 2 was fixed after a 2.5 variant had been tried on the data of Table~\ref{tab:gate}. \textbf{Floor correction}: for beliefs $q$, $\sum_k q_k\log(\varepsilon+(1-K\varepsilon)p_k)$ is maximised by water-filling, $\tilde p_k=\max(cq_k,\varepsilon)$ (strength 1); strengths 0, 0.5 and 1.5 are an in-sample recalibration, chosen per option-count group on the blend fold. The submitted vectors are thus shaped for this grader, not plain beliefs. \textbf{Exact skip rules}: where a GIVEN-parent gate has no exception among $n\ge20$ visible rows on each side, the sentinel gets $1/(n+2)$ or $1-1/(n+2)$.
 
 %% ---------------------------------------------------------------------------
 \section{Models, data, and compute}
 \label{sec:resources}
 
-\paragraph{Pretrained models and off-the-shelf components.} One pretrained model (Table~\ref{tab:models}). Everything else is fitted at run time with PyTorch \citep{paszke2019pytorch}, scikit-learn and SciPy.
+\paragraph{Pretrained models and off-the-shelf components.} One pretrained model (Table~\ref{tab:models}); everything else is fitted at run time with PyTorch \citep{paszke2019pytorch}, scikit-learn and SciPy \citep{virtanen2020scipy}.
 
 \begin{table}[h]
   \centering
   \small
-  \caption{Pretrained models and off-the-shelf components.}
+  \caption{Pretrained models. Revision \texttt{4dcd344e\allowbreak ce2c00be\allowbreak 9e831fdd\allowbreak 35bed57b\allowbreak 5ad83e19}, SHA-256 \texttt{bdc7dbd5\allowbreak e4ff21f8\ldots f9b3d4ed0} (full value in the repository).}
   \label{tab:models}
   \resizebox{\linewidth}{!}{%
 \begin{tabular}{lll}
     \toprule
     Component & Version / checkpoint & Role in pipeline  \\
     \midrule
-    TabICL v2 classifier & \texttt{jingang/TabICL} @ \texttt{4dcd344}, file \texttt{...-v2-20260212.ckpt} & blend member, inference only \\
-    \texttt{tabicl} package & 2.2.0 (PyPI) & loads and runs the checkpoint \\
+    TabICL v2 classifier & \texttt{jingang/TabICL}, file \texttt{tabicl-classifier-v2-20260212.ckpt} & blend member, inference only \\
+    \texttt{tabicl} package & 2.2.0 (PyPI, BSD-3-Clause) & loads and runs the checkpoint \\
     \bottomrule
   \end{tabular}}
 \end{table}
 
-\paragraph{Data and compute.} No external data enters the submitted model. Because hosted feedback is limited to noised, rounded development scores, design choices were made offline on datasets in the competition's exact format, scored with the organisers' \texttt{score.py} (Table~\ref{tab:external}): our own generators on the three official schemas (true probabilities kept), and public surveys reshaped to the same format. Hosted: one H100, 16\,GB RAM. Locally (RTX 3050 Ti, 4\,GB) a full test-phase rehearsal of all three surveys took 2778\,s; peak memory on a 16.5k-row, 203-question survey was 3.5\,GB.
+\paragraph{Data.} The submission reads only the frame passed to \texttt{predict()}; no external data enters it. During development we used the hosted DEV feedback (noised, rounded scores of our uploads) and the organisers' sandboxes for plumbing. Design choices were made offline on datasets in the competition's exact format, scored with the organisers' \texttt{score.py}: our own simulators on the three official schemas (true probabilities kept) and public surveys reshaped to the same format (Table~\ref{tab:external}). Compute: hosted, one H100 and 16\,GB RAM; locally, one RTX 3050 Ti (4\,GB), where a full test-phase rehearsal of the three surveys took 2778\,s and peak memory on a 20,000-row, 203-question survey was 3.5\,GB.
+
+\paragraph{Data use.} The similarity model and layer weight visible rows by agreement on the GIVEN columns only: no identifier, key or external record is used or built, and nothing but the probability vectors leaves the run. On UNHCR, whose two rounds the organisers describe as independent cross-sections, some households were plausibly interviewed in both; where a hidden row's GIVEN profile closely matches a visible one, the layer moves the prediction toward that row's answers. On our simulated UNHCR-like data the layer's gain comes from such re-interviewed households (App.~\ref{app:local}). As it copies information from visible respondents, it must be switched off (\texttt{SB\_TOP=0}) before any output is released as imputed or synthetic microdata. \tbd{[Authors: state whether the organisers were consulted about this, and their answer.]}
 
 \begin{table}[h]
   \centering
   \small
-  \caption{External datasets, all used \emph{only offline for model selection}; none is read by the submission.}
+  \caption{External datasets, used \emph{only offline to compare designs}; none is read by the submission. ``Rows'': rows of each local dataset built from it.}
   \label{tab:external}
   \resizebox{\linewidth}{!}{%
-\begin{tabular}{llll}
+\begin{tabular}{lllll}
     \toprule
-    Dataset & Source & Size & Use \\
+    Dataset & Source & Licence / terms & Rows & Use \\
     \midrule
-    freeCodeCamp New Coder Survey 2016, 2021 & Kaggle (ODbL / CC-BY-SA-4.0) & 6,927 rows/sample & World-Bank-shaped tests \\
-    Kaggle ML \& DS Survey 2017; Stack Overflow 2018 & Kaggle (ODbL) & 6,927 rows/sample & World-Bank-shaped tests \\
-    US Current Population Survey, Jan+Feb 2024 & census.gov (public domain) & 2 months & repeat-household tests \\
-    Afrobarometer Round 8 & afrobarometer.org (free, cite) & 34 countries & memory/time tests \\
-    IPIP Big-Five; DASS & openpsychometrics.org & public & generic tests \\
-    GVU internet survey (\texttt{kdd\_internet\_usage}) & OpenML & 10,108 & generic tests \\
-    YouGov COVID-19 tracker & GitHub (research only) & 10 countries & evaluation only \\
+    freeCodeCamp New Coder Surveys 2016, 2021 \citep{fcc2016,fcc2021} & Kaggle \texttt{freecodecamp/2016-new-coder-survey-}, \texttt{fccuser/2021-new-coder-survey} & ODbL-1.0; CC-BY-SA-4.0 & $4\times6{,}927$ & WB-shaped tests \\
+    Kaggle ML \& DS Survey 2017 \citep{kaggle2017} & Kaggle \texttt{kaggle/kaggle-survey-2017} & ODbL-1.0 & $2\times6{,}927$ & WB-shaped tests \\
+    Stack Overflow Developer Survey 2018 \citep{so2018} & Kaggle \texttt{stackoverflow/stack-overflow-2018-developer-survey} & ODbL-1.0 & $3\times6{,}927$ & WB-shaped tests \\
+    Current Population Survey, Jan+Feb 2024 \citep{cps2024} & census.gov basic monthly files & public domain & 10,349 & repeat-household tests \\
+    Afrobarometer Round 8 \citep{afrobarometer2023} & afrobarometer.org merged release 2023-03-01 & free with citation & 20,000 & memory/time tests \\
+    IPIP Big-Five \citep{goldberg2006ipip}; DASS 2017--19 & openpsychometrics.org \texttt{BIG5}, \texttt{DASS\_data\_21.02.19} & none named; public release & 19,719; 20,000 & generic tests \\
+    GVU internet survey \citep{vanschoren2014openml} & OpenML \texttt{kdd\_internet\_usage} & OpenML public & 10,108 & generic tests \\
+    YouGov COVID-19 tracker \citep{yougov2020} & github.com/YouGov-Data/covid-19-tracker & academic research only & 20,000 & evaluation only, not redistributed \\
     \bottomrule
   \end{tabular}}
 \end{table}
@@ -160,11 +166,11 @@ For question $t$ with members $m$ giving $p_m(y\mid x)$, the linear pool's weigh
 \begin{table}[h]
   \centering
   \small
-  \caption{Official SimulacraBench results for team \teamid{} (skill relative to the crowd marginal). Development scores are noised and rounded by the platform.}
+  \caption{Official SimulacraBench results for team \teamid{} (skill relative to the crowd marginal, which scores 0). Development: the best of our uploads, noised and rounded by the platform.}
   \label{tab:results}
   \begin{tabular}{lrrrr}
     \toprule
-    Split & Mean skill & UNICEF & World Bank & UNHCR \\
+    Split & ave skill & skill\_unicef & skill\_world\_bank & skill\_unhcr \\
     \midrule
     Development & 0.4893 & 0.3499 & 0.2335 & 0.8843 \\
     Test        & \tbd{0.0000} & \tbd{0.0000} & \tbd{0.0000} & \tbd{0.0000} \\
@@ -174,48 +180,24 @@ For question $t$ with members $m$ giving $p_m(y\mid x)$, the linear pool's weigh
 \end{table}
 
 \subsection{Breakdown by population, survey, or question type}
-On the development board UNICEF and UNHCR sit on the top published step and World Bank one step below (0.2335 vs.\ 0.2486). Steps are 0.015--0.02 skill, larger than most design gains, so designs were ranked locally (Table~\ref{tab:ablation}). On fabricated UNHCR-like data with known generating probabilities (development phase, 213 questions), the submission scores 0.7081 against 0.7401 for the true conditional given the GIVEN columns. The whole shortfall of 0.032 comes from rows without a near-duplicate among the visible rows (0.047, half of it on gated questions that were asked). On rows that do have one, the similarity layer brings us 0.015 \emph{above} the GIVEN-only optimum. On fabricated World Bank-like data (test-phase visibility) we are 0.0033 below the true conditional, spread evenly over all 76 questions (at most 0.00025 each), so no single question type dominates. A CatBoost member \citep{prokhorenkova2018catboost} took 16\% of the blend weight but changed real World Bank-shaped scores by $\le 0.0001$.
-
-\begin{table}[h]
-  \centering
-  \small
-  \caption{Local skill of successive versions (cumulative changes). DP1/DP2: development/test-phase visibility. Standard errors 0.005--0.013; differences between versions are paired, on identical cells.}
-  \label{tab:ablation}
-  \resizebox{\linewidth}{!}{%
-\begin{tabular}{lcccccc}
-    \toprule
-    Version (change) & UNICEF-like & WB-like & UNHCR-like & CPS panel & fCC 2021 & Dev board \\
-     & DP1 & DP1 & repeats DP1 & DP2 & DP1 & mean \\
-    \midrule
-    v1 logistic regression, ``not asked'' learned & 0.3410 & 0.1557 & 0.5417 & 0.2160 & 0.1955 & 0.43 \\
-    v2 + network, Hamming kNN, EM blend & 0.3426 & 0.1594 & 0.6954 & 0.3741 & -- & 0.46 \\
-    v3 similarity with learned weights & 0.3427 & 0.1601 & 0.7001 & 0.3987 & -- & 0.48 \\
-    v5 + TabICL & 0.3442 & 0.1650 & 0.7494 & 0.4041 & -- & 0.4828 \\
-    v7 + wide network & 0.3440 & 0.1646 & 0.7576 & 0.4040 & 0.2078 & 0.4828 \\
-    v8 TabICL second pass & 0.3440 & 0.1655 & 0.7601 & 0.4054 & 0.2084 & -- \\
-    v10 log pool, floor correction & 0.3441 & 0.1656 & 0.7632 & 0.4048 & 0.2088 & 0.4828 \\
-    v12 shared clock, TabICL rounds & 0.3438 & 0.1660 & -- & 0.4055 & -- & -- \\
-    v13 similarity layer (submitted) & 0.3441 & 0.1658 & 0.7659 & 0.4068 & 0.2089 & 0.4893 \\
-    \bottomrule
-  \end{tabular}}
-\end{table}
+The leaderboard reports one skill per survey. On the development board World Bank is our weakest survey relative to other teams, one rounding step (0.015) below the best published step (0.2335 vs.\ 0.2486), while UNICEF and UNHCR sit on the top step. Our World Bank-like simulator leaves only 0.0033 to its true conditional, so the real data likely hold structure the simulator lacks; the board shortfall is unexplained. \tbd{[After the test phase: per-survey comment on where the method does worst.]} Local evidence (version history, held-out checks, the similarity gate and the gap to the true probabilities) is in App.~\ref{app:local}; it is not leaderboard evidence.
 
 %% ---------------------------------------------------------------------------
 \section{Reproducibility}
 \label{sec:repro}
 
 \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=2pt]
-  \item Code: \url{https://github.com/Zamiul-rashid/simulacrabench-tf141} (MIT); commit \tbd{\texttt{<commit>}}. \texttt{submission/main.py} is byte-identical to the uploaded archive (SHA-256 \texttt{08bdcec2\ldots}).
-  \item Rebuild the archive: \texttt{bash scripts/build\_zip.sh} (downloads the checkpoint at the pinned revision, checks its SHA-256, zips). Predictions come from the organisers' runner calling \texttt{predict()}; locally \texttt{python starter-kit/score.py --submission submission --data <dir> --phase 2}.
-  \item Environment: Python 3.13, versions pinned in \texttt{requirements-dev.txt}; organisers' starter kit as a submodule at \texttt{aa03186}. Weights: TabICL v2, public (BSD-3-Clause), pinned by revision and checksum.
-  \item Seeds are fixed, but the number of TabICL rounds depends on machine speed and survey order; \texttt{SB\_FULL\_PASSES} and \texttt{SB\_CLOCK\_SECONDS} pin it.
+  \item Code: \url{https://github.com/Zamiul-rashid/simulacrabench-tf141} (MIT), tag \texttt{test-submission} (commit \tbd{\texttt{<commit>}}); later commits change only \texttt{paper/}, docs and analysis logs. \texttt{submission/main.py} is byte-identical to the uploaded archive; the SHA-256 of each archive member is in \texttt{README.md}. Every number in this report is mapped to its source file in \texttt{paper/numbers.md}.
+  \item Rebuild the archive: \texttt{bash scripts/build\_zip.sh} (downloads the checkpoint at the pinned revision and checks its SHA-256). Local scoring uses the organisers' \texttt{score.py} (full command in \texttt{README.md}).
+  \item Environment: Python 3.13, versions pinned in \texttt{requirements-dev.txt}; organisers' starter kit as a submodule at \texttt{aa03186}. Weights: TabICL v2, public, pinned by revision and checksum.
+  \item Results depend on wall-clock time: each member stops at a deadline, so how many TabICL rounds finish (and, under heavy load, whether a member finishes) depends on machine speed and survey order; \texttt{SB\_FULL\_PASSES} and \texttt{SB\_CLOCK\_SECONDS} bound the computation but do not fix it. Organisers should leave every \texttt{SB\_*} variable unset; the phase is detected from the number of hidden rows. Locally, three survey orders of the same version gave UNHCR-like skills 0.7005--0.7023 and World Bank-like 0.1656--0.1660.
 \end{itemize}
 
 %% ---------------------------------------------------------------------------
 \section{Limitations}
 \label{sec:limitations}
 
-The method only estimates per-cell conditional distributions. It makes no claim about joint answer patterns, so samples drawn from it would not be coherent simulated respondents. Its gains over a strong single learner are small (Table~\ref{tab:ablation}) and were measured on proxy data. The similarity layer helps only where visible rows contain near-duplicate profiles, and the split-half gate decides that per run. With few visible rows per GIVEN profile, scores for rare subgroups rest mostly on the marginal and should not be read as subgroup estimates.
+The method estimates per-cell distributions only; draws from it are not coherent respondents and can break routing where a gate's parent is itself predicted (drawing in questionnaire order avoids that). The vectors are floor-adjusted and unweighted; for domain estimates, use pre-correction probabilities, renormalise over substantive answers and apply design weights. Gains from re-interviewed households will not carry over to fresh cross-sections. The design evidence is mostly post-selection, rests on simulators we built (which plant the features the method targets) and mostly uses development-phase visibility; held-out checks (App.~\ref{app:local}) are few. Rare subgroups are shrunk toward the pooled, majority-dominated distribution, so outputs are not subgroup estimates. Blend-fold choices assume hidden rows are drawn like visible ones.
 
 %% ---------------------------------------------------------------------------
 \bibliographystyle{plainnat}
@@ -226,12 +208,12 @@ The method only estimates per-cell conditional distributions. It makes no claim 
 \appendix
 
 \section{Full configuration}
-Everything below is in \texttt{submission/main.py}; no prompts are used.
+Everything below is in \texttt{submission/main.py}; no prompts are used. (Its module docstring still describes an earlier version; this table and the code are authoritative.)
 
 \begin{table}[h]
 \centering
 \small
-\caption{Hyperparameters and selection rules. ``Blend fold'': the 20\% of visible rows (fold 0, seed 0) held back for every choice.}
+\caption{Hyperparameters and selection rules. ``Blend fold'': the 20\% of visible rows (fold 0, seed 0) used for every later choice.}
 \label{tab:hyper}
 \begin{tabular}{p{2.6cm}p{10.4cm}}
 \toprule
@@ -239,45 +221,122 @@ Component & Setting \\
 \midrule
 Encoding & One-hot of every GIVEN level plus a missing level. TabICL: frequency rank among context rows and schema order, per column. \\
 Marginal & Counts $+0.5$ per option (sentinel included). \\
-Shared network & 128 ReLU, dropout 0.5; heads per question; output bias $=\log$ marginal; AdamW, lr $3\cdot10^{-3}$, wd $10^{-2}$ (none on output bias), batch 512, $\le$80 epochs, patience 10; 5 nets (train 3 folds, stop 1, predict 1); per-question best-epoch snapshot. Deadline $0.15$ of the survey budget. \\
+Shared network & 128 ReLU, dropout 0.5; heads per question; output bias $=\log$ marginal; AdamW, lr $3\cdot10^{-3}$, wd $10^{-2}$ (none on output bias), batch 512, $\le$80 epochs, patience 10; 5 nets (train 3 folds, stop 1, predict 1); per-question best-epoch snapshot; hidden rows: mean of the 5 nets. Deadline $0.15$ of the survey budget. \\
 Wide network & As above with $384\times384$, dropout 0.15. Deadline $0.30$. \\
-Similarity model & $w=\exp(-\beta\sum_j\theta_j[x_j\ne x'_j])$; $\log\theta$ by Adam (lr 0.08, $\le$300 steps of 512 rows, clamp $[-6,3]$, early stop on 1024 probe rows), leave-one-out loss; $\beta\in\{0.5,1,2,4\}$, $\alpha\in\{0.05,0.5,5\}$ per question by leave-one-out loss; prior = shared network. Deadlines 0.37 (weights), 0.48 (votes). \\
+Similarity model & $w=\exp(-\beta\sum_j\theta_j[x_j\ne x'_j])$; $\log\theta$ by Adam (lr 0.08, $\le$300 steps of 512 rows, clamp $[-6,3]$, early stop on 1024 probe rows), leave-one-out loss; $\beta\in\{0.5,1,2,4\}$, $\alpha\in\{0.05,0.5,5\}$ per question by leave-one-out loss over all visible rows; prior = shared network. Deadlines 0.37 (weights), 0.48 (votes). \\
 Logistic regression & scikit-learn \texttt{LogisticRegression}, $C\in\{0.03,0.3,3,30\}$ on the blend fold, refit on all rows; questions in order of decreasing marginal entropy. Deadline 0.84. \\
-TabICL v2 & Pass 0: rank encoding, 1 estimator, seed 0, all questions (deadline 0.70). Rounds 1--4: both encodings, 2 estimators, \texttt{norm\_methods=none}, temperature 1, seed $=$ round$-1$, averaged; deadline 0.94. \\
+TabICL v2 & Fast pass: rank encoding, 1 estimator, seed 0, all questions (deadline 0.70). Round 1 replaces it: both encodings, 2 estimators, \texttt{norm\_methods=none}, temperature 1, seed 0. Rounds 2--4: 2 more estimators each (seed $=$ round$-1$), averaged; deadline 0.94. \\
 Linear pool & Survey-wide weights by EM (300 iterations); per question EM (400 iterations) with 40 prior pseudo-rows toward them. \\
-Log pool & Exponents in $[0,3]$, L-BFGS-B; survey-wide fit, then per question with penalty $s\lVert v-g\rVert^2$, $s=\mathrm{clip}(2000/n_\text{blend},1,4)$. Output $=0.5\cdot$linear$+0.5\cdot$log. \\
-Similarity layer & $\beta\in\{0.25,\dots,8\}$ (6 values) per survey; $\alpha\in\{0.03,\dots,30\}$ (7 values) per question; question kept if blend-fold loss drops by $>3\cdot10^{-4}$ nats; split-half (seed 7) honest gain $>2$ SE. \\
-Floor correction & Strength $\{0,0.5,1,1.5\}\varepsilon$ per option-count group (2--3, 4--6, 7--10, 11+), on the blend fold. \\
-Skip rules & GIVEN parent, no exception in visible rows, $\ge$20 rows each side; sentinel $1/(n+2)$ or $1-1/(n+2)$. \\
-Clock & From import: 800\,s (dev) / 2900\,s (test); budget $=$ (time left $-$ 80\,s) $\times$ share of the 301 questions; last survey takes all that is left. Phase detected from the number of hidden rows. \\
+Log pool & Non-marginal members; exponents in $[0,3]$, L-BFGS-B; survey-wide fit, then per question with penalty $s\lVert v-g\rVert^2$, $s=\mathrm{clip}(2000/n_\text{blend},1,4)$. Output $=0.5\cdot$linear$+0.5\cdot$log. \\
+Similarity layer & $\beta\in\{0.25,0.5,1,2,4,8\}$ per survey on the whole blend fold; $\alpha\in\{0.03,\dots,30\}$ (7 values) per question; question kept if blend-fold loss drops by $>3\cdot10^{-4}$ nats; split-half (seed 7) gain $>2$ SE (rows treated as independent). \\
+Floor correction & Strength $\{0,0.5,1,1.5\}\varepsilon$ per option-count group (2--3, 4--6, 7--10, 11+), on the blend fold; applied last, after the skip rules. \\
+Skip rules & GIVEN parent, no exception in visible rows, $n\ge$20 visible rows on each side; sentinel $1/(n+2)$ (asked) or $1-1/(n+2)$ (not asked). \\
+Clock & From import: 800\,s (dev) / 2900\,s (test) of the 900/3600\,s limits; budget $=$ (time left $-$ 80\,s) $\times$ this survey's share of the 301 questions still to come; the last survey takes all that is left. Phase detected from the number of hidden rows. \\
+Switches & Environment variables, all unset in the submitted run: \texttt{SB\_TOP} (1; 0 disables the layer), \texttt{SB\_TOP\_Z} (2.0), \texttt{SB\_TOP\_MARGIN} (0.0003), \texttt{SB\_FULL\_PASSES} (4), \texttt{SB\_CLOCK\_SECONDS} (phase default). \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\section{Additional results}
+\section{Local development evidence (not leaderboard)}
+\label{app:local}
+All numbers here are local skills from \texttt{experiments/eval/results.csv} and the logs in \texttt{experiments/eval/logs/}. Unless marked held-out, they come from the datasets on which the design was chosen, so they are \emph{post-selection} and optimistic. Standard errors resample whole respondents.
+
+\paragraph{Version history.} Table~\ref{tab:ablation}: each cell is the last run of that version at the default time budget (the version's final code). The quoted standard errors (0.005--0.013) are for absolute skills, not for differences; run-to-run variation of one version is itself about 0.002 (three survey orders: UNHCR-like 0.7005--0.7023), so the v7$\to$v13 steps on UNICEF-like and World Bank-like data are within noise. The large gains are v1$\to$v5 (network, similarity model, TabICL).
+
+\begin{table}[h]
+  \centering
+  \small
+  \caption{Local skill of successive versions (cumulative changes; post-selection). DP1/DP2: development/test-phase visibility. Unlisted versions (v4, v6, v9, v11) were not adopted or changed only memory use. Dev board: rounded leaderboard mean of an upload of that version, where one exists; one rounding step on one survey is about 0.005 of the mean, so this column cannot rank versions.}
+  \label{tab:ablation}
+  \resizebox{\linewidth}{!}{%
+\begin{tabular}{lcccccc}
+    \toprule
+    Version (change) & UNICEF-like & WB-like & UNHCR-like & CPS panel & fCC 2021 & Dev board \\
+     & DP1 & DP1 & repeats DP1 & DP2 & DP1 & mean \\
+    \midrule
+    v1 logistic regression, ``not asked'' learned & 0.3410 & 0.1557 & 0.5417 & 0.2160 & 0.1955 & 0.43 \\
+    v2 + network, Hamming kNN, EM blend & 0.3426 & 0.1594 & 0.6954 & 0.3741 & -- & 0.46 \\
+    v3 similarity with learned weights & 0.3427 & 0.1601 & 0.7001 & 0.3987 & -- & 0.48 \\
+    v5 + TabICL & 0.3442 & 0.1650 & 0.7494 & 0.4041 & -- & 0.48 \\
+    v7 + wide network & 0.3440 & 0.1646 & 0.7576$^a$ & 0.4040 & 0.2078 & 0.48 \\
+    v8 TabICL second pass & 0.3440 & 0.1655 & 0.7601 & 0.4054 & 0.2084 & -- \\
+    v10 log pool, floor correction & 0.3441 & 0.1656 & 0.7632 & 0.4048 & 0.2088 & 0.48 \\
+    v12 shared clock, TabICL rounds & 0.3438$^b$ & 0.1658$^b$ & -- & 0.4055$^b$ & -- & -- \\
+    v13 similarity layer (submitted) & 0.3441$^c$ & 0.1658 & 0.7659 & 0.4068 & 0.2089 & 0.49 \\
+    \bottomrule
+  \end{tabular}}
+
+  \smallskip\footnotesize $^a$ only run with a longer budget. $^b$ from a run of the three surveys in one process (shared clock), or for CPS at the same clock as v13. $^c$ from an earlier setting of the gate; the layer is not applied on this dataset under any setting.
+\end{table}
+
+\paragraph{Held-out checks.} Table~\ref{tab:heldout} uses data on which no design decision was taken: a fresh draw (new seed, generated after the design was frozen) of the UNHCR-like repeats simulator, and the second and third samples of the World Bank-shaped public surveys, last consulted at v8. On the fresh UNHCR-like draw the gate opened (split-half gain 3.7 SE) and v13 beats v10 by 0.0018 (SE 0.0011, $z=1.7$); with the layer forced off, v13 scores exactly v10's 0.7527, so the difference is the layer's. On the five World Bank-shaped samples the gate stayed closed and v13 is within 0.0007 of v10, with both signs: the changes after v10 neither helped nor hurt detectably there. The gains of v10 over v1 hold on held-out data ($+0.008$ to $+0.014$, each $z>4$).
+
+\begin{table}[h]
+  \centering
+  \small
+  \caption{Held-out checks (DP1). $\Delta$: v13 minus v10, cell-paired, respondent-clustered SE in parentheses.}
+  \label{tab:heldout}
+  \begin{tabular}{lcccc}
+    \toprule
+    Dataset (held out) & v1 & v10 & v13 & $\Delta$ v13$-$v10 \\
+    \midrule
+    UNHCR-like repeats, fresh draw & -- & 0.7527 & 0.7545 & $+0.0018$ (0.0011) \\
+    fCC 2016, sample 2 & 0.2834 & 0.2948 & 0.2952 & $+0.0004$ (0.0002) \\
+    fCC 2021, sample 2 & 0.1877 & 0.2014 & 0.2014 & $+0.0000$ (0.0001) \\
+    Kaggle 2017, sample 2 & 0.4243 & 0.4352 & 0.4353 & $+0.0001$ ($<$0.0001) \\
+    Stack Overflow 2018, sample 2 & 0.2060 & 0.2139 & 0.2139 & $+0.0000$ (0.0001) \\
+    Stack Overflow 2018, sample 3 & 0.2259 & 0.2371 & 0.2363 & $-0.0007$ (0.0003) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Similarity layer gate.} Table~\ref{tab:gate} compares v13 with the layer forced off (\texttt{SB\_TOP=0}, same code) and on, on the data where the gate was designed. ``Permissive'': an earlier variant that applied the layer whenever any question improved on the blend fold. ``GVU proxy'': the OpenML survey has no near-duplicates on its GIVEN columns. The layer opened only on the UNHCR-like repeats and the CPS panel, adding 0.0018 (SE 0.0008) and 0.0012 (SE 0.0006), about 2 SE each. Elsewhere it stayed closed, and off and on differ only by run-to-run noise ($|\Delta|<0.00002$; runs are not bit-identical because TabICL rounds depend on wall-clock time). The permissive variant lost 0.0003--0.0012 where the gate stays closed, including the GVU proxy with planted repeat interviews (3{,}000 duplicated rows with three GIVEN columns redrawn), so the layer does not help when re-interviews disagree on GIVEN columns. Its higher UNHCR-like score (0.7660) comes from a different run and is within run-to-run variation.
 
 \begin{table}[h]
 \centering
 \small
-\caption{The similarity layer's split-half gate (development-phase visibility unless noted). ``Permissive'': applied whenever any question improved on the blend fold.}
+\caption{The similarity layer (post-selection). Off/on: same code, separate runs; $\Delta$ cell-paired with respondent-clustered SE. Gate: the run's split-half gain divided by its (row-independent) SE.}
 \label{tab:gate}
-\resizebox{\linewidth}{!}{%
-\begin{tabular}{lcccc}
-\toprule
-Dataset & Without layer & Permissive & Gated (submitted) & Gate decision (gain / SE) \\
-\midrule
-GVU proxy with repeats & 0.1558 & 0.1546 & 0.1558 & off \\
-GVU proxy & 0.1123 & 0.1118 & 0.1123 & off \\
-World Bank-like & 0.1658 & 0.1655 & 0.1658 & off \\
-fCC 2021 (World Bank-shaped) & 0.2089 & 0.2089 & 0.2089 & off \\
-UNHCR-like, repeats & 0.7632$^\ast$ & 0.7660 & 0.7659 & on (2.6) \\
-CPS panel (test-phase visibility) & 0.4055$^\ast$ & 0.4068 & 0.4068 & on (2.2) \\
-\bottomrule
-\end{tabular}}
-
-\smallskip\footnotesize $^\ast$ previous version (v10 and v12 respectively) rather than v13 with the layer switched off.
+\begin{tabular}{lccccc}
+  \toprule
+  Dataset (phase) & Off & On & $\Delta$ (SE) & Permissive & Gate \\
+  \midrule
+  UNHCR-like repeats (DP1) & 0.7612 & 0.7630 & $+0.0018$ (0.0008) & 0.7660 & 2.5 \\
+  CPS panel (DP2) & 0.4056 & 0.4068 & $+0.0012$ (0.0006) & 0.4068 & 2.2 \\
+  GVU proxy + repeats (DP1) & 0.1558 & 0.1558 & $0.0000$ & 0.1546 & $-0.4$ \\
+  GVU proxy (DP1) & 0.1123 & 0.1123 & $0.0000$ & 0.1118 & $-3.9$ \\
+  World Bank-like (DP1) & 0.1658 & 0.1658 & $0.0000$ & 0.1655 & $-1.9$ \\
+  fCC 2021, sample 1 (DP1) & 0.2089 & 0.2090 & $0.0000$ & 0.2089 & 0.1 \\
+  \bottomrule
+\end{tabular}
 \end{table}
 
-\paragraph{Ideas that did not help locally.} Several similarity kernels, ordinal smoothing of ordered answers, ordered copies of GIVEN columns, a two-part (asked / answer) logistic model, and CatBoost as an extra member. Extra TabICL estimators help only slightly (at most $+0.0006$ on World Bank-like data), which is why they are added in rounds only while time remains. Development uploads of the same design with more run time (850\,s) returned the same or a lower rounded score, consistent with the rounding step exceeding the effect.
+\paragraph{Distance to the true probabilities.} On simulated UNHCR-like data (\texttt{unhcr\_full}, DP1, run with a 1400\,s clock), v13 scores 0.7081 against 0.7401 for the true $P(\text{answer}\mid\text{GIVEN})$, a gap of 0.032 (bootstrap SE 0.006). The true probabilities are Monte Carlo estimates (1000 simulations per row), so this reference is slightly pessimistic. On the 24\% of hidden rows whose household also has a visible interview, v13 is 0.015 (SE 0.004) \emph{above} the GIVEN-only reference, because the layer uses that interview; on the other rows it is 0.047 (SE 0.004) below, mostly on gated questions that were asked (0.023). Per question, the median gap is 0.0001 and the largest is 0.0058, an answer option that never occurs among visible rows. On simulated World Bank-like data (DP2) v13 is 0.0033 below the true conditional; per question the median gap is 0.00005 and the largest 0.00025, and 24\% of questions are at or above the reference (Monte Carlo noise). Per country (skill against the whole-set reference loss, v13 as shipped, DP1): on UNHCR-like repeats, Egypt 0.698, Jordan 0.749, Iraq 0.767, Lebanon 0.808 (109--202 hidden respondents each); on World Bank-like data, South Africa 0.111 (166), Lesotho 0.201 (18), Nigeria 0.023 (13), ``Other'' 0.045 (9) and unanswered 0.202 (314). Small countries score far below the pooled figure, consistent with shrinkage toward the majority (Sec.~\ref{sec:limitations}).
+
+\paragraph{Other checks.} A CatBoost member \citep{prokhorenkova2018catboost} took 16\% of the blend weight on a World Bank-shaped survey but changed skill by $\le0.0001$ on the two such surveys tested. More TabICL estimators help slightly ($+0.0006$ on World Bank-like data with eight). On the organisers' random sandboxes and on Afrobarometer, v8--v13 are flat (sandboxes 0.4037--0.4040 / 0.2854--0.2858 / 0.2361--0.2363; Afrobarometer DP2 0.1834--0.1835). On the YouGov tracker (DP2), v1 scores 0.2798 and v8 0.2900. Also tried and dropped: other similarity kernels, ordinal smoothing, ordered copies of GIVEN columns, a two-part (asked/answer) model. Development uploads: App.~\ref{app:uploads}.
+
+\section{Development uploads}
+\label{app:uploads}
+Table~\ref{tab:uploads} lists our development uploads (\texttt{experiments/eval/dev\_submissions.csv}). Scores are noised and rounded by the platform; a change smaller than one rounding step on one survey (about 0.005 of the mean) is invisible, so these numbers confirm that a version ran, not which version is better. In particular, the rise from 0.4828 to 0.4893 is one step on UNHCR and cannot be credited to the similarity layer alone, since v11 and v12 also changed.
+
+\begin{table}[h]
+\centering
+\small
+\caption{Development uploads (rounded leaderboard values as displayed; blank: not recorded).}
+\label{tab:uploads}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llrrrr}
+\toprule
+Version & Date & Mean & UNICEF & World Bank & UNHCR \\
+\midrule
+Organisers' gate baseline & 2026-11-11 & 0.06 & & & $-0.37$ \\
+v1, v2, v3 & 2026-11-11 & 0.43, 0.46, 0.48 & & & \\
+v5, v7 & 2026-11-11 & 0.4828 & 0.3499 & 0.2335 & 0.8650 \\
+v10 (ID 1048594) & 2026-11-12 & 0.48 & 0.35 & 0.23 & 0.87 \\
+v13 (chosen for the test phase) & 2026-11-12 & 0.4893 & 0.3499 & 0.2335 & 0.8843 \\
+v14 (v13, longer clock; not chosen) & 2026-11-13 & 0.48 & & & \\
+\bottomrule
+\end{tabular}}
+\end{table}
 
 \end{document}

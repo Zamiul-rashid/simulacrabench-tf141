@@ -1,0 +1,74 @@
+== build fresh UNHCR-like set
+`ceiling_given` = skill of the true generating distribution P(answer | GIVEN). `ceiling_given_plus_link` additionally conditions hidden rows that have a visible interview of the same household on that interview's potential answers (including answers to questions it was not routed to), so it is an upper bound.
+built unhcr_repeats_fresh in 47s
+== C: fresh-seed UNHCR-like (never used for design)
+[heldout_fresh v10_pool unhcr_repeats_fresh p1] [v10] dropped: nothing
+[heldout_fresh v10_pool unhcr_repeats_fresh p1] SKILL 0.7527 (+/- 0.0082) 487s  v10_pool on unhcr_repeats_fresh
+[heldout_fresh v13_top unhcr_repeats_fresh p1] [v13] similarity layer: sharpness 2.0; 160 of 213 questions adjusted; held-back loss down 0.0026 per question on average; honest gain 0.3347 per row (standard error 0.0901) (2s, at 501s of 509s)
+[heldout_fresh v13_top unhcr_repeats_fresh p1] [v13] dropped: nothing
+[heldout_fresh v13_top unhcr_repeats_fresh p1] SKILL 0.7545 (+/- 0.0081) 501s  v13_top on unhcr_repeats_fresh
+[heldout_fresh_top0 v13_top unhcr_repeats_fresh p1] [v13] dropped: nothing
+[heldout_fresh_top0 v13_top unhcr_repeats_fresh p1] SKILL 0.7527 (+/- 0.0082) 500s  v13_top on unhcr_repeats_fresh
+== A: held-out World Bank-shaped samples (not consulted after v8)
+[heldout_wb v1_learned_gates real_wb_fcc2016_s2 p1] SKILL 0.2834 (+/- 0.0103) 18s  v1_learned_gates on real_wb_fcc2016_s2
+[heldout_wb v10_pool real_wb_fcc2016_s2 p1] [v10] dropped: nothing
+[heldout_wb v10_pool real_wb_fcc2016_s2 p1] SKILL 0.2948 (+/- 0.0101) 118s  v10_pool on real_wb_fcc2016_s2
+[heldout_wb v13_top real_wb_fcc2016_s2 p1] [v13] similarity layer: not applied: honest gain -0.0026 per row summed over questions, below 2.0 x its standard error 0.0191 (1s, at 145s of 148s)
+[heldout_wb v13_top real_wb_fcc2016_s2 p1] [v13] dropped: nothing
+[heldout_wb v13_top real_wb_fcc2016_s2 p1] SKILL 0.2952 (+/- 0.0101) 145s  v13_top on real_wb_fcc2016_s2
+[heldout_wb v1_learned_gates real_wb_fcc2021_s2 p1] SKILL 0.1877 (+/- 0.0096) 33s  v1_learned_gates on real_wb_fcc2021_s2
+[heldout_wb v10_pool real_wb_fcc2021_s2 p1] [v10] dropped: nothing
+[heldout_wb v10_pool real_wb_fcc2021_s2 p1] SKILL 0.2014 (+/- 0.0096) 136s  v10_pool on real_wb_fcc2021_s2
+[heldout_wb v13_top real_wb_fcc2021_s2 p1] [v13] similarity layer: not applied: honest gain -0.0356 per row summed over questions, below 2.0 x its standard error 0.0167 (1s, at 164s of 167s)
+[heldout_wb v13_top real_wb_fcc2021_s2 p1] [v13] dropped: nothing
+[heldout_wb v13_top real_wb_fcc2021_s2 p1] SKILL 0.2014 (+/- 0.0096) 164s  v13_top on real_wb_fcc2021_s2
+[heldout_wb v1_learned_gates real_wb_kaggle2017_s2 p1] SKILL 0.4243 (+/- 0.0101) 32s  v1_learned_gates on real_wb_kaggle2017_s2
+[heldout_wb v10_pool real_wb_kaggle2017_s2 p1] [v10] dropped: nothing
+[heldout_wb v10_pool real_wb_kaggle2017_s2 p1] SKILL 0.4352 (+/- 0.0102) 163s  v10_pool on real_wb_kaggle2017_s2
+[heldout_wb v13_top real_wb_kaggle2017_s2 p1] [v13] similarity layer: not applied: honest gain -0.0162 per row summed over questions, below 2.0 x its standard error 0.0139 (1s, at 192s of 194s)
+[heldout_wb v13_top real_wb_kaggle2017_s2 p1] [v13] dropped: nothing
+[heldout_wb v13_top real_wb_kaggle2017_s2 p1] SKILL 0.4353 (+/- 0.0102) 192s  v13_top on real_wb_kaggle2017_s2
+[heldout_wb v1_learned_gates real_wb_so2018_s2 p1] SKILL 0.2060 (+/- 0.0131) 41s  v1_learned_gates on real_wb_so2018_s2
+[heldout_wb v10_pool real_wb_so2018_s2 p1] [v10] dropped: nothing
+[heldout_wb v10_pool real_wb_so2018_s2 p1] SKILL 0.2139 (+/- 0.0136) 166s  v10_pool on real_wb_so2018_s2
+[heldout_wb v13_top real_wb_so2018_s2 p1] [v13] similarity layer: not applied: honest gain -0.0447 per row summed over questions, below 2.0 x its standard error 0.0094 (1s, at 185s of 189s)
+[heldout_wb v13_top real_wb_so2018_s2 p1] [v13] dropped: nothing
+[heldout_wb v13_top real_wb_so2018_s2 p1] SKILL 0.2139 (+/- 0.0136) 185s  v13_top on real_wb_so2018_s2
+[heldout_wb v1_learned_gates real_wb_so2018_s3 p1] SKILL 0.2259 (+/- 0.0141) 30s  v1_learned_gates on real_wb_so2018_s3
+[heldout_wb v10_pool real_wb_so2018_s3 p1] [v10] dropped: nothing
+[heldout_wb v10_pool real_wb_so2018_s3 p1] SKILL 0.2371 (+/- 0.0145) 183s  v10_pool on real_wb_so2018_s3
+[heldout_wb v13_top real_wb_so2018_s3 p1] [v13] similarity layer: not applied: honest gain -0.0319 per row summed over questions, below 2.0 x its standard error 0.0102 (2s, at 198s of 189s)
+[heldout_wb v13_top real_wb_so2018_s3 p1] [v13] dropped: ['logistic regression on 17 of 79 questions']
+[heldout_wb v13_top real_wb_so2018_s3 p1] SKILL 0.2363 (+/- 0.0145) 198s  v13_top on real_wb_so2018_s3
+== B: similarity layer on/off, same version (selection sets)
+[gate_on v13_top unhcr_repeats p1] [v13] similarity layer: sharpness 2.0; 124 of 213 questions adjusted; held-back loss down 0.0018 per question on average; honest gain 0.1893 per row (standard error 0.0769) (4s, at 507s of 509s)
+[gate_on v13_top unhcr_repeats p1] [v13] dropped: ['logistic regression on 158 of 213 questions']
+[gate_on v13_top unhcr_repeats p1] SKILL 0.7630 (+/- 0.0076) 507s  v13_top on unhcr_repeats
+[gate_off v13_top unhcr_repeats p1] [v13] dropped: ['logistic regression on 163 of 213 questions']
+[gate_off v13_top unhcr_repeats p1] SKILL 0.7612 (+/- 0.0077) 504s  v13_top on unhcr_repeats
+[gate_on v13_top real_cps_panel p2] [v13] similarity layer: sharpness 1.0; 37 of 80 questions adjusted; held-back loss down 0.0014 per question on average; honest gain 0.0635 per row (standard error 0.0292) (2s, at 714s of 749s)
+[gate_on v13_top real_cps_panel p2] [v13] dropped: nothing
+[gate_on v13_top real_cps_panel p2] SKILL 0.4068 (+/- 0.0128) 714s  v13_top on real_cps_panel
+[gate_off v13_top real_cps_panel p2] [v13] dropped: nothing
+[gate_off v13_top real_cps_panel p2] SKILL 0.4056 (+/- 0.0126) 713s  v13_top on real_cps_panel
+[gate_on v13_top proxy_repeat p1] [v13] similarity layer: not applied: honest gain -0.0069 per row summed over questions, below 2.0 x its standard error 0.0160 (2s, at 141s of 141s)
+[gate_on v13_top proxy_repeat p1] [v13] dropped: nothing
+[gate_on v13_top proxy_repeat p1] SKILL 0.1558 (+/- 0.0052) 141s  v13_top on proxy_repeat
+[gate_off v13_top proxy_repeat p1] [v13] dropped: nothing
+[gate_off v13_top proxy_repeat p1] SKILL 0.1558 (+/- 0.0052) 141s  v13_top on proxy_repeat
+[gate_on v13_top proxy p1] [v13] similarity layer: not applied: honest gain -0.0240 per row summed over questions, below 2.0 x its standard error 0.0062 (1s, at 141s of 141s)
+[gate_on v13_top proxy p1] [v13] dropped: nothing
+[gate_on v13_top proxy p1] SKILL 0.1123 (+/- 0.0047) 142s  v13_top on proxy
+[gate_off v13_top proxy p1] [v13] dropped: nothing
+[gate_off v13_top proxy p1] SKILL 0.1123 (+/- 0.0047) 139s  v13_top on proxy
+[gate_on v13_top wb_realistic p1] [v13] similarity layer: not applied: honest gain -0.0342 per row summed over questions, below 2.0 x its standard error 0.0182 (1s, at 179s of 182s)
+[gate_on v13_top wb_realistic p1] [v13] dropped: nothing
+[gate_on v13_top wb_realistic p1] SKILL 0.1658 (+/- 0.0095) 179s  v13_top on wb_realistic
+[gate_off v13_top wb_realistic p1] [v13] dropped: nothing
+[gate_off v13_top wb_realistic p1] SKILL 0.1658 (+/- 0.0095) 178s  v13_top on wb_realistic
+[gate_on v13_top real_wb_fcc2021_s1 p1] [v13] similarity layer: not applied: honest gain 0.0007 per row summed over questions, below 2.0 x its standard error 0.0094 (1s, at 165s of 167s)
+[gate_on v13_top real_wb_fcc2021_s1 p1] [v13] dropped: nothing
+[gate_on v13_top real_wb_fcc2021_s1 p1] SKILL 0.2090 (+/- 0.0092) 165s  v13_top on real_wb_fcc2021_s1
+[gate_off v13_top real_wb_fcc2021_s1 p1] [v13] dropped: nothing
+[gate_off v13_top real_wb_fcc2021_s1 p1] SKILL 0.2089 (+/- 0.0092) 164s  v13_top on real_wb_fcc2021_s1
+REVIEW_RUNS_DONE

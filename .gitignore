@@ -18,3 +18,4 @@ paper/*.out
 paper/*.bbl
 paper/*.blg
 experiments/eval/.lock
+experiments/eval/cells/

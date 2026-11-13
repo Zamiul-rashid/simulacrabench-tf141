@@ -2,7 +2,10 @@
 organisers' own scoring functions. One run at a time (file lock) because the
 models share a small GPU; concurrent runs would silently lose members.
 
-  .venv/bin/python experiments/eval/run.py <submission_dir> <dataset_dir> [--phase 1|2] [--tag note]
+  .venv/bin/python experiments/eval/run.py <submission_dir> <dataset_dir> [--phase 1|2] [--tag note] [--dump cells.npz]
+
+--dump saves every scored cell's floored log score with its respondent and item, so two runs
+on the same dataset and phase can be compared cell by cell (experiments/eval/paired.py).
 
 <dataset_dir> holds respondents.parquet and schema.json. Prints the submission's
 own log lines, then one line:  SKILL <exact skill> (+/- se) <seconds>s ...
@@ -17,6 +20,7 @@ from make_sandbox import load_config
 ap = argparse.ArgumentParser()
 ap.add_argument("submission"); ap.add_argument("dataset")
 ap.add_argument("--schema"); ap.add_argument("--phase", type=int, default=1); ap.add_argument("--tag", default="")
+ap.add_argument("--dump", help="save per-cell floored log scores to this .npz")
 a = ap.parse_args()
 config = load_config(os.path.join(ROOT, "starter-kit", "config.yml"))
 floor = config["scoring"]["floor"]
@@ -37,7 +41,14 @@ with open(os.path.join(ROOT, "experiments", "eval", ".lock"), "w") as lock:
         vec = mod.predict(frame.copy(), schema)
         row["seconds"] = round(time.time() - t0, 1)
         S.check(schema, vec, cells)
-        res = S.score(schema, config, S.floored(vec, schema, cells, floor), truth, cells, ref)
+        fl = S.floored(vec, schema, cells, floor)
+        res = S.score(schema, config, fl, truth, cells, ref)
+        if a.dump:
+            import numpy as np
+            lp = [np.log(v[S.options_for(schema, c[2]).index(y)]) for v, y, c in zip(fl, truth, cells)]
+            os.makedirs(os.path.dirname(os.path.abspath(a.dump)), exist_ok=True)
+            np.savez_compressed(a.dump, logp=np.asarray(lp), respondent=np.asarray([c[1] for c in cells], dtype=str),
+                                item=np.asarray([c[2] for c in cells], dtype=str), reference=ref)
         row.update(status="PASS", skill=round(res["skill"], 4), std_error=round(res["std_error"] / ref, 4))
         print("SKILL %.4f (+/- %.4f) %.0fs  %s on %s" % (res["skill"], res["std_error"] / ref,
                                                         row["seconds"], row["submission"], row["dataset"]))

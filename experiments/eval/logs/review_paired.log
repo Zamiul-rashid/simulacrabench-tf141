@@ -1,0 +1,79 @@
+## C. Fresh held-out UNHCR-like set (unhcr_repeats_fresh, phase 1)
+A: v13_fresh.npz  skill 0.7545  (132273 cells)
+B: v10_fresh.npz  skill 0.7527
+A - B: +0.0018  (respondent-clustered se 0.0011, z 1.7)
+A: v13_fresh.npz  skill 0.7545  (132273 cells)
+B: v13top0_fresh.npz  skill 0.7527
+A - B: +0.0018  (respondent-clustered se 0.0010, z 1.7)
+
+## A. Held-out World Bank-shaped sets (phase 1): v13 vs v10, then v10 vs v1
+# real_wb_fcc2016_s2
+A: v13_real_wb_fcc2016_s2.npz  skill 0.2952  (32240 cells)
+B: v10_real_wb_fcc2016_s2.npz  skill 0.2948
+A - B: +0.0004  (respondent-clustered se 0.0002, z 2.6)
+A - B: +0.0113  (respondent-clustered se 0.0012, z 9.4)
+# real_wb_fcc2021_s2
+A: v13_real_wb_fcc2021_s2.npz  skill 0.2014  (36400 cells)
+B: v10_real_wb_fcc2021_s2.npz  skill 0.2014
+A - B: +0.0000  (respondent-clustered se 0.0001, z 0.2)
+A - B: +0.0136  (respondent-clustered se 0.0012, z 11.8)
+# real_wb_kaggle2017_s2
+A: v13_real_wb_kaggle2017_s2.npz  skill 0.4353  (42120 cells)
+B: v10_real_wb_kaggle2017_s2.npz  skill 0.4352
+A - B: +0.0001  (respondent-clustered se 0.0000, z 2.3)
+A - B: +0.0109  (respondent-clustered se 0.0012, z 8.8)
+# real_wb_so2018_s2
+A: v13_real_wb_so2018_s2.npz  skill 0.2139  (41080 cells)
+B: v10_real_wb_so2018_s2.npz  skill 0.2139
+A - B: +0.0000  (respondent-clustered se 0.0001, z 0.7)
+A - B: +0.0079  (respondent-clustered se 0.0018, z 4.5)
+# real_wb_so2018_s3
+A: v13_real_wb_so2018_s3.npz  skill 0.2363  (41080 cells)
+B: v10_real_wb_so2018_s3.npz  skill 0.2371
+A - B: -0.0007  (respondent-clustered se 0.0003, z -2.9)
+A - B: +0.0111  (respondent-clustered se 0.0013, z 8.6)
+
+## B. Similarity layer on vs off (same v13 code; off = SB_TOP=0)
+# unhcr_repeats
+A: v13on_unhcr_repeats.npz  skill 0.7630  (132273 cells)
+B: v13off_unhcr_repeats.npz  skill 0.7612
+A - B: +0.0018  (respondent-clustered se 0.0008, z 2.2)
+# real_cps_panel
+A: v13on_real_cps_panel.npz  skill 0.4068  (144880 cells)
+B: v13off_real_cps_panel.npz  skill 0.4056
+A - B: +0.0012  (respondent-clustered se 0.0006, z 2.1)
+# proxy_repeat
+A: v13on_proxy_repeat.npz  skill 0.1558  (146910 cells)
+B: v13off_proxy_repeat.npz  skill 0.1558
+A - B: -0.0000  (respondent-clustered se 0.0000, z -2.1)
+# proxy
+A: v13on_proxy.npz  skill 0.1123  (118000 cells)
+B: v13off_proxy.npz  skill 0.1123
+A - B: +0.0000  (respondent-clustered se 0.0000, z 0.5)
+# wb_realistic
+A: v13on_wb_realistic.npz  skill 0.1658  (39520 cells)
+B: v13off_wb_realistic.npz  skill 0.1658
+A - B: -0.0000  (respondent-clustered se 0.0000, z -0.6)
+# real_wb_fcc2021_s1
+A: v13on_real_wb_fcc2021_s1.npz  skill 0.2090  (36400 cells)
+B: v13off_real_wb_fcc2021_s1.npz  skill 0.2089
+A - B: +0.0000  (respondent-clustered se 0.0000, z 0.7)
+
+## Per-country skill (v13, similarity gate as shipped)
+# wb_realistic p1, by user.country
+A: v13on_wb_realistic.npz  skill 0.1658  (39520 cells)
+skill of A by user.country (hidden respondents):
+  Lesotho                          18 respondents  skill 0.2014
+  Nigeria                          13 respondents  skill 0.0230
+  Not answered                    314 respondents  skill 0.2021
+  Other                             9 respondents  skill 0.0445
+  South Africa                    166 respondents  skill 0.1110
+# unhcr_repeats p1, by s1_2_country_asylum_lbl
+A: v13on_unhcr_repeats.npz  skill 0.7630  (132273 cells)
+B: v13off_unhcr_repeats.npz  skill 0.7612
+A - B: +0.0018  (respondent-clustered se 0.0008, z 2.2)
+skill of A by s1_2_country_asylum_lbl (hidden respondents):
+  Egypt                           109 respondents  skill 0.6976
+  Iraq                            127 respondents  skill 0.7668
+  Jordan                          183 respondents  skill 0.7494
+  Lebanon                         202 respondents  skill 0.8081
