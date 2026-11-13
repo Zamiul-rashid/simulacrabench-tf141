@@ -282,3 +282,33 @@ when,submission,dataset,phase,status,skill,std_error,seconds,n_visible,n_hidden,
 2026-11-12 23:33:03,v14_zipcheck,sandbox_world_bank,1,PASS,0.2858,0.0087,178.9,5195,520,39520,v14_sandboxes_offline call2_of_3
 2026-11-12 23:36:02,v14_zipcheck,sandbox_unhcr,1,PASS,0.2361,0.0123,576.6,8279,621,132273,v14_sandboxes_offline call3_of_3
 2026-11-13 00:17:02,submission,wb_realistic,2,PASS,0.1772,0.0062,449.6,5715,1212,92112,repo_reproduce
+2026-11-14 03:49:41,v10_pool,unhcr_repeats_fresh,1,PASS,0.7527,0.0082,487.4,8279,621,132273,heldout_fresh
+2026-11-14 03:57:54,v13_top,unhcr_repeats_fresh,1,PASS,0.7545,0.0081,501.3,8279,621,132273,heldout_fresh
+2026-11-14 04:06:20,v13_top,unhcr_repeats_fresh,1,PASS,0.7527,0.0082,499.5,8279,621,132273,heldout_fresh_top0
+2026-11-14 04:14:42,v1_learned_gates,real_wb_fcc2016_s2,1,PASS,0.2834,0.0103,18.1,5195,520,32240,heldout_wb
+2026-11-14 04:15:02,v10_pool,real_wb_fcc2016_s2,1,PASS,0.2948,0.0101,117.8,5195,520,32240,heldout_wb
+2026-11-14 04:17:01,v13_top,real_wb_fcc2016_s2,1,PASS,0.2952,0.0101,144.9,5195,520,32240,heldout_wb
+2026-11-14 04:19:28,v1_learned_gates,real_wb_fcc2021_s2,1,PASS,0.1877,0.0096,33.1,5195,520,36400,heldout_wb
+2026-11-14 04:20:03,v10_pool,real_wb_fcc2021_s2,1,PASS,0.2014,0.0096,136.2,5195,520,36400,heldout_wb
+2026-11-14 04:22:21,v13_top,real_wb_fcc2021_s2,1,PASS,0.2014,0.0096,164.0,5195,520,36400,heldout_wb
+2026-11-14 04:25:07,v1_learned_gates,real_wb_kaggle2017_s2,1,PASS,0.4243,0.0101,32.3,5195,520,42120,heldout_wb
+2026-11-14 04:25:41,v10_pool,real_wb_kaggle2017_s2,1,PASS,0.4352,0.0102,162.6,5195,520,42120,heldout_wb
+2026-11-14 04:28:26,v13_top,real_wb_kaggle2017_s2,1,PASS,0.4353,0.0102,192.2,5195,520,42120,heldout_wb
+2026-11-14 04:31:40,v1_learned_gates,real_wb_so2018_s2,1,PASS,0.206,0.0131,40.7,5195,520,41080,heldout_wb
+2026-11-14 04:32:22,v10_pool,real_wb_so2018_s2,1,PASS,0.2139,0.0136,166.2,5195,520,41080,heldout_wb
+2026-11-14 04:35:10,v13_top,real_wb_so2018_s2,1,PASS,0.2139,0.0136,185.0,5195,520,41080,heldout_wb
+2026-11-14 04:38:17,v1_learned_gates,real_wb_so2018_s3,1,PASS,0.2259,0.0141,29.5,5195,520,41080,heldout_wb
+2026-11-14 04:38:48,v10_pool,real_wb_so2018_s3,1,PASS,0.2371,0.0145,182.7,5195,520,41080,heldout_wb
+2026-11-14 04:41:55,v13_top,real_wb_so2018_s3,1,PASS,0.2363,0.0145,198.4,5195,520,41080,heldout_wb
+2026-11-14 04:45:19,v13_top,unhcr_repeats,1,PASS,0.763,0.0076,507.4,8279,621,132273,gate_on
+2026-11-14 04:53:53,v13_top,unhcr_repeats,1,PASS,0.7612,0.0077,504.0,8279,621,132273,gate_off
+2026-11-14 05:02:26,v13_top,real_cps_panel,2,PASS,0.4068,0.0128,714.1,8538,1811,144880,gate_on
+2026-11-14 05:14:25,v13_top,real_cps_panel,2,PASS,0.4056,0.0126,712.9,8538,1811,144880,gate_off
+2026-11-14 05:26:22,v13_top,proxy_repeat,1,PASS,0.1558,0.0052,141.2,9699,2490,146910,gate_on
+2026-11-14 05:28:47,v13_top,proxy_repeat,1,PASS,0.1558,0.0052,140.7,9699,2490,146910,gate_off
+2026-11-14 05:31:13,v13_top,proxy,1,PASS,0.1123,0.0047,141.7,7500,2000,118000,gate_on
+2026-11-14 05:33:38,v13_top,proxy,1,PASS,0.1123,0.0047,139.1,7500,2000,118000,gate_off
+2026-11-14 05:35:59,v13_top,wb_realistic,1,PASS,0.1658,0.0095,179.0,5195,520,39520,gate_on
+2026-11-14 05:39:00,v13_top,wb_realistic,1,PASS,0.1658,0.0095,178.4,5195,520,39520,gate_off
+2026-11-14 05:42:01,v13_top,real_wb_fcc2021_s1,1,PASS,0.209,0.0092,165.2,5195,520,36400,gate_on
+2026-11-14 05:44:48,v13_top,real_wb_fcc2021_s1,1,PASS,0.2089,0.0092,164.2,5195,520,36400,gate_off
