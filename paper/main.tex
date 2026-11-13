@@ -205,7 +205,7 @@ On the development board UNICEF and UNHCR sit on the top published step and Worl
 \label{sec:repro}
 
 \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=2pt]
-  \item Code: \tbd{\texttt{https://github.com/<account>/simulacrabench-tf141}} (MIT); commit \tbd{\texttt{<commit>}}. \texttt{submission/main.py} is byte-identical to the uploaded archive (SHA-256 \texttt{08bdcec2\ldots}).
+  \item Code: \url{https://github.com/Zamiul-rashid/simulacrabench-tf141} (MIT); commit \tbd{\texttt{<commit>}}. \texttt{submission/main.py} is byte-identical to the uploaded archive (SHA-256 \texttt{08bdcec2\ldots}).
   \item Rebuild the archive: \texttt{bash scripts/build\_zip.sh} (downloads the checkpoint at the pinned revision, checks its SHA-256, zips). Predictions come from the organisers' runner calling \texttt{predict()}; locally \texttt{python starter-kit/score.py --submission submission --data <dir> --phase 2}.
   \item Environment: Python 3.13, versions pinned in \texttt{requirements-dev.txt}; organisers' starter kit as a submodule at \texttt{aa03186}. Weights: TabICL v2, public (BSD-3-Clause), pinned by revision and checksum.
   \item Seeds are fixed, but the number of TabICL rounds depends on machine speed and survey order; \texttt{SB\_FULL\_PASSES} and \texttt{SB\_CLOCK\_SECONDS} pin it.

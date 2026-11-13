@@ -27,7 +27,7 @@ Every hidden cell is scored on its own, so the target is $P(\text{answer}\mid\te
 paper/main.pdf (after filling the red placeholders and rebuilding with `make -C paper`).
 
 **code_url**
-TODO: https://github.com/<account>/simulacrabench-tf141
+https://github.com/Zamiul-rashid/simulacrabench-tf141 (private until the final upload is in; make public before Nov 20 16:59 BD)
 
 **code_license**
 MIT

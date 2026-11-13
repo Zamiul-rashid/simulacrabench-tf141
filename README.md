@@ -40,7 +40,7 @@ by the three surveys, and time a survey does not use flows to the next.
 ## Reproduce
 
 ```bash
-git clone --recurse-submodules <this repo> && cd simulacrabench-tf141
+git clone --recurse-submodules https://github.com/Zamiul-rashid/simulacrabench-tf141 && cd simulacrabench-tf141
 conda create -y -p .venv python=3.13 && conda activate ./.venv     # or any Python 3.13
 pip install -r requirements-dev.txt
 
