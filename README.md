@@ -14,13 +14,14 @@ The technical report is [`paper/main.pdf`](paper/main.pdf).
 
 ## Method in one paragraph
 
-Each cell is scored on its own with a proper log score, so the target is
-P(answer | GIVEN columns) for every question, fitted at run time on the visible rows.
+Each cell is scored on its own with a log score, so the target is the distribution of the
+answer given the respondent's GIVEN columns and the visible rows (P(answer | GIVEN) when hidden
+and visible respondents are unrelated), estimated at run time for every question.
 Five model families are fitted inside `predict()`: a shared multi-head network, a wider
 network, a similarity model with learned column weights, per-question logistic regression,
 and the pretrained in-context learner TabICL v2 (inference only). They are blended per
-question by a linear pool with EM weights, averaged with a geometric pool. A similarity layer
-is applied on top only when a split-half test on held-back rows shows a clear gain. "Not
+question by a linear pool with EM weights, averaged with a logarithmic pool. A similarity layer
+is applied on top only when a split-half check on held-back rows supports it. "Not
 asked" is learned as an ordinary answer, exact skip rules are applied where the data never
 break them, and a last step corrects for the grader's probability floor. One clock is shared
 by the three surveys, and time a survey does not use flows to the next.
@@ -31,7 +32,7 @@ by the three surveys, and time a survey does not use flows to the next.
 |---|---|
 | `submission/` | The submitted `main.py` (byte-identical to the uploaded archive) and `requirements.txt`. The test-phase code is tagged `test-submission`. |
 | `scripts/fetch_tabicl.py` | Downloads the TabICL v2 checkpoint from a pinned Hugging Face revision and checks its SHA-256. |
-| `scripts/build_zip.sh` | Rebuilds the exact archive that was uploaded. |
+| `scripts/build_zip.sh` | Rebuilds the uploaded archive: the same members with identical contents (SHA-256 table below); the zip bytes differ because of timestamps. |
 | `experiments/eval/` | Local scoring tools (organisers' scorer), the rehearsal of the hosted run, the gap analysis, and `results.csv`, the log of every local run. See [`experiments/README.md`](experiments/README.md). |
 | `experiments/datasets/` | Builders for every local test dataset and a README per dataset with source and licence. No data is committed. |
 | `paper/` | The technical report (LaTeX source, official template). |
@@ -74,10 +75,13 @@ Results depend on wall-clock time: every model member stops at a deadline, so ho
 rounds finish depends on the machine's speed and on the order of the surveys. `SB_FULL_PASSES`
 and `SB_CLOCK_SECONDS` bound the computation but do not fix it; leave every `SB_*` variable
 unset to reproduce the submitted run (the phase is detected from the number of hidden rows).
-Locally, three survey orders of the same version varied by about 0.002 skill.
+Locally, repeat runs of the same version varied by 0.001-0.003 skill; a run that overruns a
+member deadline drops that member (logged as `dropped:`) and scores lower.
 
-If outputs are ever released as imputed or synthetic microdata, switch the similarity layer
-off (`SB_TOP=0`): it moves predictions toward near-identical visible respondents.
+The outputs are not fit for release as imputed or synthetic microdata without a
+disclosure-risk assessment. The members that compare rows (similarity model, TabICL) and
+the similarity layer move predictions toward near-identical visible respondents. Switching the
+layer off (`SB_TOP=0`) removes only a small part of that effect.
 
 ## Data use
 

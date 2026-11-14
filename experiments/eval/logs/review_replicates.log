@@ -1,0 +1,22 @@
+== replicates: layer on/off, alternating, same unchanged v13 code
+[gate_on_r2 v13_top unhcr_repeats p1] [v13] similarity layer: sharpness 2.0; 124 of 213 questions adjusted; held-back loss down 0.0017 per question on average; honest gain 0.1907 per row (standard error 0.0758) (3s, at 500s of 509s)
+[gate_on_r2 v13_top unhcr_repeats p1] [v13] dropped: nothing
+[gate_on_r2 v13_top unhcr_repeats p1] SKILL 0.7651 (+/- 0.0076) 500s  v13_top on unhcr_repeats
+[gate_off_r2 v13_top unhcr_repeats p1] [v13] dropped: nothing
+[gate_off_r2 v13_top unhcr_repeats p1] SKILL 0.7639 (+/- 0.0077) 496s  v13_top on unhcr_repeats
+[gate_on_r3 v13_top unhcr_repeats p1] [v13] similarity layer: sharpness 2.0; 124 of 213 questions adjusted; held-back loss down 0.0017 per question on average; honest gain 0.1976 per row (standard error 0.0758) (2s, at 497s of 509s)
+[gate_on_r3 v13_top unhcr_repeats p1] [v13] dropped: nothing
+[gate_on_r3 v13_top unhcr_repeats p1] SKILL 0.7649 (+/- 0.0076) 498s  v13_top on unhcr_repeats
+[gate_off_r3 v13_top unhcr_repeats p1] [v13] dropped: nothing
+[gate_off_r3 v13_top unhcr_repeats p1] SKILL 0.7637 (+/- 0.0077) 496s  v13_top on unhcr_repeats
+[heldout_fresh_r2 v13_top unhcr_repeats_fresh p1] [v13] similarity layer: sharpness 2.0; 161 of 213 questions adjusted; held-back loss down 0.0026 per question on average; honest gain 0.3318 per row (standard error 0.0898) (2s, at 498s of 509s)
+[heldout_fresh_r2 v13_top unhcr_repeats_fresh p1] [v13] dropped: nothing
+[heldout_fresh_r2 v13_top unhcr_repeats_fresh p1] SKILL 0.7552 (+/- 0.0081) 499s  v13_top on unhcr_repeats_fresh
+[heldout_fresh_top0_r2 v13_top unhcr_repeats_fresh p1] [v13] dropped: nothing
+[heldout_fresh_top0_r2 v13_top unhcr_repeats_fresh p1] SKILL 0.7537 (+/- 0.0082) 498s  v13_top on unhcr_repeats_fresh
+[gate_on_r2 v13_top real_cps_panel p2] [v13] similarity layer: sharpness 1.0; 37 of 80 questions adjusted; held-back loss down 0.0014 per question on average; honest gain 0.0649 per row (standard error 0.0294) (1s, at 714s of 749s)
+[gate_on_r2 v13_top real_cps_panel p2] [v13] dropped: nothing
+[gate_on_r2 v13_top real_cps_panel p2] SKILL 0.4068 (+/- 0.0128) 714s  v13_top on real_cps_panel
+[gate_off_r2 v13_top real_cps_panel p2] [v13] dropped: nothing
+[gate_off_r2 v13_top real_cps_panel p2] SKILL 0.4056 (+/- 0.0127) 713s  v13_top on real_cps_panel
+REPLICATES_DONE
