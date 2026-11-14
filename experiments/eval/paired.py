@@ -37,4 +37,6 @@ if args.by_column:
     print("skill of A by %s (hidden respondents):" % args.by_column)
     for v in sorted(set(lv)):
         m = lv == v
-        print("  %-28s %6d respondents  skill %.4f" % (v[:28], len(set(A["respondent"][m])), 1 + A["logp"][m].mean() / R))
+        g = 1 + A["logp"][m] / R
+        se = S.cluster_std_error(g, A["respondent"][m], draws=2000, seed=0)
+        print("  %-28s %6d respondents  skill %.4f (se %.4f)" % (v[:28], len(set(A["respondent"][m])), g.mean(), se))

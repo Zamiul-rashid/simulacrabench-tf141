@@ -312,3 +312,11 @@ when,submission,dataset,phase,status,skill,std_error,seconds,n_visible,n_hidden,
 2026-11-14 05:39:00,v13_top,wb_realistic,1,PASS,0.1658,0.0095,178.4,5195,520,39520,gate_off
 2026-11-14 05:42:01,v13_top,real_wb_fcc2021_s1,1,PASS,0.209,0.0092,165.2,5195,520,36400,gate_on
 2026-11-14 05:44:48,v13_top,real_wb_fcc2021_s1,1,PASS,0.2089,0.0092,164.2,5195,520,36400,gate_off
+2026-11-14 06:02:42,v13_top,unhcr_repeats,1,PASS,0.7651,0.0076,500.2,8279,621,132273,gate_on_r2
+2026-11-14 06:11:07,v13_top,unhcr_repeats,1,PASS,0.7639,0.0077,495.6,8279,621,132273,gate_off_r2
+2026-11-14 06:19:26,v13_top,unhcr_repeats,1,PASS,0.7649,0.0076,497.8,8279,621,132273,gate_on_r3
+2026-11-14 06:27:48,v13_top,unhcr_repeats,1,PASS,0.7637,0.0077,495.9,8279,621,132273,gate_off_r3
+2026-11-14 06:36:08,v13_top,unhcr_repeats_fresh,1,PASS,0.7552,0.0081,498.6,8279,621,132273,heldout_fresh_r2
+2026-11-14 06:44:31,v13_top,unhcr_repeats_fresh,1,PASS,0.7537,0.0082,498.1,8279,621,132273,heldout_fresh_top0_r2
+2026-11-14 06:52:53,v13_top,real_cps_panel,2,PASS,0.4068,0.0128,713.9,8538,1811,144880,gate_on_r2
+2026-11-14 07:04:51,v13_top,real_cps_panel,2,PASS,0.4056,0.0127,713.2,8538,1811,144880,gate_off_r2

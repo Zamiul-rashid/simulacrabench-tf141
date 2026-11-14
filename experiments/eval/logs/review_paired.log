@@ -77,3 +77,69 @@ skill of A by s1_2_country_asylum_lbl (hidden respondents):
   Iraq                            127 respondents  skill 0.7668
   Jordan                          183 respondents  skill 0.7494
   Lebanon                         202 respondents  skill 0.8081
+
+## Per-country skill with respondent-clustered SEs (paired.py --by-column, after adding SEs)
+A: v13on_wb_realistic.npz  skill 0.1658  (39520 cells)
+skill of A by user.country (hidden respondents):
+  Lesotho                          18 respondents  skill 0.2014 (se 0.0282)
+  Nigeria                          13 respondents  skill 0.0230 (se 0.0491)
+  Not answered                    314 respondents  skill 0.2021 (se 0.0132)
+  Other                             9 respondents  skill 0.0445 (se 0.0599)
+  South Africa                    166 respondents  skill 0.1110 (se 0.0139)
+A: v13on_unhcr_repeats.npz  skill 0.7630  (132273 cells)
+skill of A by s1_2_country_asylum_lbl (hidden respondents):
+  Egypt                           109 respondents  skill 0.6976 (se 0.0209)
+  Iraq                            127 respondents  skill 0.7668 (se 0.0184)
+  Jordan                          183 respondents  skill 0.7494 (se 0.0141)
+  Lebanon                         202 respondents  skill 0.8081 (se 0.0100)
+
+## Replicates (2026-11-14): same unchanged v13 code, layer on/off alternating; no member dropped in any run (logs/review_replicates.log)
+# unhcr_repeats p1 r2: on vs off
+A: v13on_unhcr_repeats_r2.npz  skill 0.7651  (132273 cells)
+B: v13off_unhcr_repeats_r2.npz  skill 0.7639
+A - B: +0.0012  (respondent-clustered se 0.0008, z 1.4)
+# unhcr_repeats p1 r3: on vs off
+A: v13on_unhcr_repeats_r3.npz  skill 0.7649  (132273 cells)
+B: v13off_unhcr_repeats_r3.npz  skill 0.7637
+A - B: +0.0012  (respondent-clustered se 0.0008, z 1.4)
+# real_cps_panel p2 r2: on vs off
+A: v13on_real_cps_panel_r2.npz  skill 0.4068  (144880 cells)
+B: v13off_real_cps_panel_r2.npz  skill 0.4056
+A - B: +0.0012  (respondent-clustered se 0.0006, z 2.0)
+# unhcr_repeats_fresh p1 r2: layer on vs off
+A: v13_fresh_r2.npz  skill 0.7552  (132273 cells)
+B: v13top0_fresh_r2.npz  skill 0.7537
+A - B: +0.0014  (respondent-clustered se 0.0011, z 1.3)
+# unhcr_repeats_fresh p1 r2: v13 vs v10
+A: v13_fresh_r2.npz  skill 0.7552  (132273 cells)
+B: v10_fresh.npz  skill 0.7527
+A - B: +0.0025  (respondent-clustered se 0.0011, z 2.3)
+## Run-to-run, same arm
+# on r2 vs on r3
+A: v13on_unhcr_repeats_r2.npz  skill 0.7651  (132273 cells)
+B: v13on_unhcr_repeats_r3.npz  skill 0.7649
+A - B: +0.0002  (respondent-clustered se 0.0001, z 2.0)
+# off r2 vs off r3
+A: v13off_unhcr_repeats_r2.npz  skill 0.7639  (132273 cells)
+B: v13off_unhcr_repeats_r3.npz  skill 0.7637
+A - B: +0.0002  (respondent-clustered se 0.0001, z 1.9)
+# on r2 vs first on (LR dropped on 158 questions)
+A: v13on_unhcr_repeats_r2.npz  skill 0.7651  (132273 cells)
+B: v13on_unhcr_repeats.npz  skill 0.7630
+A - B: +0.0021  (respondent-clustered se 0.0004, z 5.8)
+# off r2 vs first off (LR dropped on 163 questions)
+A: v13off_unhcr_repeats_r2.npz  skill 0.7639  (132273 cells)
+B: v13off_unhcr_repeats.npz  skill 0.7612
+A - B: +0.0026  (respondent-clustered se 0.0005, z 4.9)
+# cps on r2 vs first on
+A: v13on_real_cps_panel_r2.npz  skill 0.4068  (144880 cells)
+B: v13on_real_cps_panel.npz  skill 0.4068
+A - B: -0.0000  (respondent-clustered se 0.0000, z -2.4)
+# fresh on r2 vs first
+A: v13_fresh_r2.npz  skill 0.7552  (132273 cells)
+B: v13_fresh.npz  skill 0.7545
+A - B: +0.0007  (respondent-clustered se 0.0002, z 3.1)
+# fresh off r2 vs first
+A: v13top0_fresh_r2.npz  skill 0.7537  (132273 cells)
+B: v13top0_fresh.npz  skill 0.7527
+A - B: +0.0011  (respondent-clustered se 0.0004, z 2.8)
