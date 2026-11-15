@@ -8,10 +8,10 @@ Due 2026-11-20 10:59 UTC (16:59 Bangladesh time). The field marked TODO (authors
 SimulacraBench Technical Report: A Time-Budgeted Blend of Tabular Learners for Per-Cell Survey Completion
 
 **authors**
-1. Zamiul Rashid (zamiul.rashid@g.bracu.ac.bd)
+1. Zamiul Rashid (zamiul.rashid@g.bracu.ac.bd), OpenReview `~Zamiul_Rashid1`
 2. Azra Humayra Alam Prova (azra.humayraalam.prova@g.bracu.ac.bd), OpenReview `~Azra_Humayra_Alam_Prova1`
 
-TODO: affiliations; Zamiul Rashid's OpenReview profile ID.
+TODO: affiliations (also in the paper's author block).
 
 **team_id**
 TF141
