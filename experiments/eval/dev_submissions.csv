@@ -9,3 +9,4 @@ v10_pool,2026-11-12,1048594,0.48,0.35,0.23,0.87,as displayed (2 decimals)
 v13_top,2026-11-12,,0.4893,0.3499,0.2335,0.8843,best development score; the submitted test-phase code
 v14_time,2026-11-13,,0.48,,,,v13 with an 850 s / 3150 s clock and up to 8 TabICL rounds; not chosen
 v13_top,2026-11-14,,,,,,re-upload of the same archive; result not recorded here
+v13_top (test phase),2026-11-15,1053552,0.49,0.34,0.23,0.88,test-phase run of the same archive; as displayed (2 decimals)
