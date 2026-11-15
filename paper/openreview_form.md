@@ -9,9 +9,9 @@ SimulacraBench Technical Report: A Time-Budgeted Blend of Tabular Learners for P
 
 **authors**
 1. Zamiul Rashid (zamiul.rashid@g.bracu.ac.bd)
-2. Azra Humayra Alam Prova (TODO: email)
+2. Azra Humayra Alam Prova (azra.humayraalam.prova@g.bracu.ac.bd), OpenReview `~Azra_Humayra_Alam_Prova1`
 
-TODO: affiliations; every author needs an OpenReview profile.
+TODO: affiliations; Zamiul Rashid's OpenReview profile ID.
 
 **team_id**
 TF141
