@@ -14,7 +14,7 @@ Status key: **Done**; **Partly done** (the minimum fix is done, the fuller fix i
 |---|---|---|
 | REV-01 Traceable numbers | Partly done | `paper/numbers.md` maps every number to a file. Added to `experiments/eval/logs/`: the gap-analysis outputs, gate log lines, rehearsal timing and memory log, CatBoost log, review-run and replicate logs, and paired comparisons. `experiments/eval/dev_submissions.csv` holds the upload history. The 0.7081 analysis is named (`unhcr_full`, DP1, 1400 s clock). *(r2)* The 0.2486 leaderboard snapshot is committed, anonymised, as `experiments/eval/leaderboard_steps_2026-10-27.md`. **Authors:** Codabench submission IDs are missing for 9 of the 10 development uploads, including the 0.4893 one. |
 | REV-02 Section 3 compliance | Done *(r2)* | Section 3 holds leaderboard numbers only. The version table, gap analysis, CatBoost and other local checks moved to App. B, "Local development evidence (not leaderboard)". Round 1 had left the local 0.0033 figure in Section 3.2; it is now only in App. B. |
-| REV-03 Data-use disclosure | Partly done | Section 2 "Data use" covers GIVEN-only matching and no identifiers or keys. *(r2)* It now says that the gain on re-interviewed households comes mostly from the members, not the layer, so switching the layer off is not enough, and that any release as imputed or synthetic microdata needs a disclosure-risk assessment. **Authors:** whether the organisers were consulted (red placeholder). |
+| REV-03 Data-use disclosure | Done | Section 2 "Data use" covers GIVEN-only matching and no identifiers or keys. *(r2)* It now says that the gain on re-interviewed households comes mostly from the members, not the layer, so switching the layer off is not enough, and that any release as imputed or synthetic microdata needs a disclosure-risk assessment. The authors chose not to add a statement on organiser consultation; the organisers did not raise the matter. |
 | REV-04 Reproducibility statement | Done | "Pin it" is removed. Section 4 says results depend on wall-clock time, tells organisers to leave all `SB_*` unset, explains how the phase is detected, and reports the spread over three survey orders. Declined: an `SB_DETERMINISTIC` mode and a hosted log file, because both would edit `main.py`. |
 | REV-05 Checklist labels | Done | The template labels are restored verbatim. |
 | REV-06 Checkpoint name | Done | Table 1 gives the full file name. The caption gives the revision and a SHA-256 prefix; the full value is in the README and `scripts/fetch_tabicl.py`. |
@@ -55,7 +55,7 @@ Status key: **Done**; **Partly done** (the minimum fix is done, the fuller fix i
 **EIC**
 
 1. The 0.7081 vs 0.7401 analysis comes from `unhcr_full`, DP1, run with `SB_CLOCK_SECONDS=1400`. The output is in `experiments/eval/logs/gap_v13_top_unhcr_full_p1.{log,csv}`.
-2. **Authors to answer** (organiser consultation).
+2. The organisers did not raise the matter with us, and the paper makes no statement about consultation.
 3. The dev scores come from the `v13_top` upload of 2026-11-12, built from `submission/main.py` (SHA-256 `08bdcec2…c1e4`). v5 and v7 were separate uploads and landed on the same rounded values. v10 (ID 1048594) displayed 0.48. See App. C.
 4. *(r2, corrected)* Table 3 uses the column titles shown on the leaderboard page (Grand Prize, UNICEF, World Bank, UNHCR), and the caption says so. Round 1 wrongly said it used the result keys.
 5. The "Organizer baseline (test)" row will be filled from the organisers' entry on the test leaderboard. The crowd marginal scores 0 by construction, and the caption says so.
@@ -71,7 +71,7 @@ Status key: **Done**; **Partly done** (the minimum fix is done, the fuller fix i
 **R3**
 
 1. The hosted gate decisions are not visible. Locally, the gate opens on UNHCR-like data and stays closed on World Bank-like and UNICEF-like data. Within a single development upload, the UNHCR board gain cannot be attributed to the layer (App. C).
-2. **Authors to answer.**
+2. As for EIC Q2: the organisers did not raise the matter, and the paper makes no statement about consultation.
 3. No. The submitted code returns only the floor-corrected vectors. The pre-correction probabilities exist inside the run, and Section 5 tells users to take those, which requires a copy of the code that returns them.
 4. The wave is a GIVEN column, so the members can learn wave-specific `NA_GATED` patterns. We did not check `NA_GATED` error by wave separately.
 5. We computed skill per country rather than the gap to the true conditional (App. B). Countries differ widely: on UNHCR-like data from 0.698 (Egypt) to 0.808 (Lebanon). On World Bank-like data, South Africa scores 0.111 and respondents with no country 0.202. The smallest groups (Nigeria, 13 hidden respondents; "Other", 9) score 0.023 and 0.045.
@@ -101,7 +101,6 @@ Not done in round 2: the synthesis checker (`check_re_review_synthesis.py`) coul
 
 ## Still open before the deadline
 
-- Organiser consultation (REV-03, EIC Q2, R3 Q2).
 - Codabench submission IDs of the development uploads, especially the 0.4893 one, and the 2026-11-14 re-upload's score (REV-01, NI-11).
 - Whether a prize-eligible entry counts as academic research under YouGov's terms (R3 Q6).
 - Author names and affiliations, and OpenReview profiles.
