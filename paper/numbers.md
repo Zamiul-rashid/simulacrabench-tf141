@@ -10,7 +10,8 @@ submission, dataset and phase whose tag is not a budget, clock, gate-variant or 
 |---|---|
 | 0.4893 / 0.3499 / 0.2335 / 0.8843 | Development leaderboard, `v13_top` upload of 2026-11-12; `experiments/eval/dev_submissions.csv` |
 | "adds about 0.001 skill locally" | Table 7 replicate pairs (+0.0012, `logs/review_paired.log`) and Table 6 fresh draw (+0.0018, +0.0014) |
-| Test-phase scores | To be filled from the test-phase leaderboard entry (submission ID in `dev_submissions.csv` once known) |
+| Test-phase scores 0.49 / 0.34 / 0.23 / 0.88 | Test-phase leaderboard, submission 1053552 (2026-11-15), displayed to two decimals; `experiments/eval/dev_submissions.csv` |
+| Commit 276901c | `git rev-parse test-submission` |
 
 ## Section 1
 

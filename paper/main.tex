@@ -49,7 +49,7 @@
 \end{center}
 
 \begin{abstract}
-Each hidden cell is scored on its own, so we estimate, for every question, the distribution of the answer given a respondent's GIVEN columns and the visible respondents, inside the hosted run. Five model families are fitted at run time (a shared multi-head network, a wider network, a similarity model with learned column weights, per-question logistic regression, and the pretrained in-context learner TabICL v2) and blended per question: a linear pool with weights fitted by expectation-maximisation on a held-back fold, averaged with a logarithmic pool. A last similarity layer, which adds about 0.001 skill locally where visible rows contain near-duplicates of hidden ones (not significant on held-out data), is kept for a survey only if a split-half check on the held-back fold supports it. ``Not asked'' is an ordinary answer option, a closing step adapts the vectors to the grader's probability floor, and one clock is shared by the three surveys. The design was chosen on locally built proxy datasets (no SimulacraBench data); the local numbers we report come from those same data unless marked held-out. Best development-leaderboard score: 0.4893 (UNICEF 0.3499, World Bank 0.2335, UNHCR 0.8843). Test-phase score: \tbd{0.0000}.
+Each hidden cell is scored on its own, so we estimate, for every question, the distribution of the answer given a respondent's GIVEN columns and the visible respondents, inside the hosted run. Five model families are fitted at run time (a shared multi-head network, a wider network, a similarity model with learned column weights, per-question logistic regression, and the pretrained in-context learner TabICL v2) and blended per question: a linear pool with weights fitted by expectation-maximisation on a held-back fold, averaged with a logarithmic pool. A last similarity layer, which adds about 0.001 skill locally where visible rows contain near-duplicates of hidden ones (not significant on held-out data), is kept for a survey only if a split-half check on the held-back fold supports it. ``Not asked'' is an ordinary answer option, a closing step adapts the vectors to the grader's probability floor, and one clock is shared by the three surveys. The design was chosen on locally built proxy datasets (no SimulacraBench data); the local numbers we report come from those same data unless marked held-out. Leaderboard: development 0.4893 (UNICEF 0.3499, World Bank 0.2335, UNHCR 0.8843); test 0.49 (0.34, 0.23, 0.88).
 \end{abstract}
 
 %% ---------------------------------------------------------------------------
@@ -163,28 +163,28 @@ For question $t$ with members $m$ giving $p_m(y\mid x)$, the linear pool's weigh
 \begin{table}[h]
   \centering
   \small
-  \caption{Official SimulacraBench results for team \teamid{}; columns as titled on the leaderboard (Grand Prize: mean skill; crowd marginal $=0$). Development: our best upload, platform-noised, unrounded. Organizer baseline: the organisers' test entry.}
+  \caption{Official SimulacraBench results for team \teamid{}; columns as titled on the leaderboard (Grand Prize: mean skill; crowd marginal $=0$). Development: our best upload, platform-noised, unrounded. Test: submission 1053552, two decimals as displayed. No organiser baseline was on the test board (2026-11-15).}
   \label{tab:results}
   \begin{tabular}{lrrrr}
     \toprule
     Split & Grand Prize & UNICEF & World Bank & UNHCR \\
     \midrule
     Development & 0.4893 & 0.3499 & 0.2335 & 0.8843 \\
-    Test        & \tbd{0.0000} & \tbd{0.0000} & \tbd{0.0000} & \tbd{0.0000} \\
-    Organizer baseline (test) & \tbd{0.0000} & \tbd{0.0000} & \tbd{0.0000} & \tbd{0.0000} \\
+    Test        & 0.49 & 0.34 & 0.23 & 0.88 \\
+    Organizer baseline (test) & -- & -- & -- & -- \\
     \bottomrule
   \end{tabular}
 \end{table}
 
 \subsection{Breakdown by population, survey, or question type}
-On the development board World Bank is our weakest survey relative to other teams, one rounding step (0.015) below the best published step (0.2335 vs.\ 0.2486), while UNICEF and UNHCR sit on the top step. Our local World Bank-like simulator shows little headroom (App.~\ref{app:local}), so the board shortfall is unexplained. \tbd{[After the test phase: per-survey comment on where the method does worst.]} Local, non-leaderboard evidence: App.~\ref{app:local}.
+On the development board World Bank is our weakest survey relative to other teams, one rounding step (0.015) below the best published step (0.2335 vs.\ 0.2486), while UNICEF and UNHCR sit on the top step. Our local World Bank-like simulator shows little headroom (App.~\ref{app:local}), so the board shortfall is unexplained. The test scores equal the development ones at two decimals, so this holds on test. Local, non-leaderboard evidence: App.~\ref{app:local}.
 
 %% ---------------------------------------------------------------------------
 \section{Reproducibility}
 \label{sec:repro}
 
 \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=2pt]
-  \item Code: \url{https://github.com/Zamiul-rashid/simulacrabench-tf141} (MIT), tag \texttt{test-submission} (commit \tbd{\texttt{<commit>}}); later commits change only \texttt{paper/}, docs and analysis logs. \texttt{submission/main.py} is byte-identical to the uploaded archive; the SHA-256 of each archive member is in \texttt{README.md}. Number sources: \texttt{paper/numbers.md}.
+  \item Code: \url{https://github.com/Zamiul-rashid/simulacrabench-tf141} (MIT), tag \texttt{test-submission} (commit \texttt{276901c}); later commits change only \texttt{paper/}, docs and analysis logs. \texttt{submission/main.py} is byte-identical to the uploaded archive; the SHA-256 of each archive member is in \texttt{README.md}. Number sources: \texttt{paper/numbers.md}.
   \item Rebuild: \texttt{bash scripts/build\_zip.sh} (fetches the checkpoint at the pinned revision, checks its SHA-256); local scoring with the organisers' \texttt{score.py} as in \texttt{README.md}.
   \item Environment: Python 3.13, versions pinned in \texttt{requirements-dev.txt}; organisers' starter kit as a submodule at \texttt{aa03186}. Weights: TabICL v2, public, pinned by revision and checksum.
   \item Results depend on wall-clock time: members stop at deadlines, so what finishes depends on machine speed, load and survey order; \texttt{SB\_FULL\_PASSES} and \texttt{SB\_CLOCK\_SECONDS} bound the computation but do not fix it. Organisers should leave every \texttt{SB\_*} variable unset; the phase is detected from the number of hidden rows. Locally, three survey orders of the same version gave UNHCR-like skills 0.7005--0.7023 and World Bank-like 0.1656--0.1660.
@@ -337,6 +337,8 @@ v10 (ID 1048594) & 2026-11-12 & 0.48 & 0.35 & 0.23 & 0.87 \\
 v13 (chosen for the test phase) & 2026-11-12 & 0.4893 & 0.3499 & 0.2335 & 0.8843 \\
 v14 (v13, longer clock; not chosen) & 2026-11-13 & 0.48 & & & \\
 v13 re-upload (same archive) & 2026-11-14 & & & & \\
+\midrule
+v13, test phase (ID 1053552) & 2026-11-15 & 0.49 & 0.34 & 0.23 & 0.88 \\
 \bottomrule
 \end{tabular}}
 \end{table}

@@ -2,8 +2,7 @@
 
 Paste these into the form at
 <https://openreview.net/group?id=NeurIPS.cc/2026/Competition/SimulacraBench>.
-Due 2026-11-20 10:59 UTC (16:59 Bangladesh time). Fields marked TODO need the test-phase
-result or the public repo URL.
+Due 2026-11-20 10:59 UTC (16:59 Bangladesh time). The field marked TODO (authors) needs the authors' OpenReview profiles.
 
 **title**
 SimulacraBench Technical Report: A Time-Budgeted Blend of Tabular Learners for Per-Cell Survey Completion
@@ -21,13 +20,13 @@ survey completion, conditional probability estimation, tabular foundation models
 Per-question blend of five run-time-fitted tabular learners (incl. TabICL v2) with EM weights, a split-half-gated similarity layer and floor correction, under one shared time budget.
 
 **abstract**
-Each hidden cell is scored on its own, so we estimate, for every question, the distribution of the answer given a respondent's GIVEN columns and the visible respondents, inside the hosted run. Five model families are fitted at run time (a shared multi-head network, a wider network, a similarity model with learned column weights, per-question logistic regression, and the pretrained in-context learner TabICL v2) and blended per question: a linear pool with weights fitted by expectation-maximisation on a held-back fold, averaged with a logarithmic pool. A last similarity layer, which adds about 0.001 skill locally where visible rows contain near-duplicates of hidden ones (not significant on held-out data), is kept for a survey only if a split-half check on the held-back fold supports it. "Not asked" is an ordinary answer option, a closing step adapts the vectors to the grader's probability floor, and one clock is shared by the three surveys. The design was chosen on locally built proxy datasets (no SimulacraBench data); the local numbers we report come from those same data unless marked held-out. Best development-leaderboard score: 0.4893 (UNICEF 0.3499, World Bank 0.2335, UNHCR 0.8843). Test-phase score: TODO.
+Each hidden cell is scored on its own, so we estimate, for every question, the distribution of the answer given a respondent's GIVEN columns and the visible respondents, inside the hosted run. Five model families are fitted at run time (a shared multi-head network, a wider network, a similarity model with learned column weights, per-question logistic regression, and the pretrained in-context learner TabICL v2) and blended per question: a linear pool with weights fitted by expectation-maximisation on a held-back fold, averaged with a logarithmic pool. A last similarity layer, which adds about 0.001 skill locally where visible rows contain near-duplicates of hidden ones (not significant on held-out data), is kept for a survey only if a split-half check on the held-back fold supports it. "Not asked" is an ordinary answer option, a closing step adapts the vectors to the grader's probability floor, and one clock is shared by the three surveys. The design was chosen on locally built proxy datasets (no SimulacraBench data); the local numbers we report come from those same data unless marked held-out. Best development-leaderboard score: 0.4893 (UNICEF 0.3499, World Bank 0.2335, UNHCR 0.8843). Test-phase score: 0.49 (UNICEF 0.34, World Bank 0.23, UNHCR 0.88; as displayed, two decimals).
 
 **pdf**
 paper/main.pdf (after filling the red placeholders and rebuilding with `make -C paper`).
 
 **code_url**
-https://github.com/Zamiul-rashid/simulacrabench-tf141 (private until the final upload is in; make public before Nov 20 16:59 BD)
+https://github.com/Zamiul-rashid/simulacrabench-tf141 (tag `test-submission`; switch the repository to public before submitting this form)
 
 **code_license**
 MIT

@@ -8,7 +8,7 @@ respondent's GIVEN columns and the fully visible respondents.
 | | Mean skill | UNICEF | World Bank | UNHCR |
 |---|---|---|---|---|
 | Development leaderboard (noised, rounded) | 0.4893 | 0.3499 | 0.2335 | 0.8843 |
-| Test phase | *to be added* | | | |
+| Test phase (submission 1053552, 2026-11-15; displayed to two decimals) | 0.49 | 0.34 | 0.23 | 0.88 |
 
 The technical report is [`paper/main.pdf`](paper/main.pdf).
 
