@@ -2,7 +2,7 @@
 
 Paste these into the form at
 <https://openreview.net/group?id=NeurIPS.cc/2026/Competition/SimulacraBench>.
-Due 2026-11-20 10:59 UTC (16:59 Bangladesh time). The field marked TODO (authors) needs the authors' OpenReview profiles.
+Due 2026-11-20 10:59 UTC (16:59 Bangladesh time).
 
 **title**
 SimulacraBench Technical Report: A Time-Budgeted Blend of Tabular Learners for Per-Cell Survey Completion
@@ -11,7 +11,7 @@ SimulacraBench Technical Report: A Time-Budgeted Blend of Tabular Learners for P
 1. Zamiul Rashid (zamiul.rashid@g.bracu.ac.bd), OpenReview `~Zamiul_Rashid1`
 2. Azra Humayra Alam Prova (azra.humayraalam.prova@g.bracu.ac.bd), OpenReview `~Azra_Humayra_Alam_Prova1`
 
-TODO: affiliations (also in the paper's author block).
+Affiliation (both authors): BRAC University, Dhaka, Bangladesh (domain bracu.ac.bd).
 
 **team_id**
 TF141
